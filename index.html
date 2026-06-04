@@ -481,9 +481,59 @@
     .wheel-left { width: 100%; }
     canvas { width: 100% !important; max-width: 300px; }
   }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: rgba(250, 250, 250, 0.94);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #E0DEDA;
+    z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 56px;
+  }
+  .nav-tag-teal {
+    background: #E6F4F1; color: #4A9B8E;
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    pointer-events: none;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .nav-links-list {
+    display: flex; gap: 28px; list-style: none; align-items: center;
+  }
+  .nav-links-list a {
+    font-size: 13px; color: #7A7A7A;
+    text-decoration: none; font-weight: 500;
+    transition: color 0.15s;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .nav-links-list a:hover { color: #1A1A1A; }
+  .nav-cta-teal {
+    background: #4A9B8E; color: #FFFFFF !important;
+    padding: 7px 16px; border-radius: 7px;
+    font-size: 13px !important; font-weight: 600 !important;
+    transition: background 0.15s;
+  }
+  .nav-cta-teal:hover { background: #3D8577 !important; }
+  body { padding-top: 72px; }
+  @media (max-width: 860px) {
+    nav { padding: 0 20px; }
+    .nav-links-list { display: none; }
+  }
+
 </style>
 </head>
 <body>
+<nav>
+  <a href="https://sebastian-weber.github.io/uxui-portfolio/" class="nav-logo" style="display:flex;align-items:center;line-height:0;margin-right:8px;text-decoration:none;"><svg width="40" height="40" style="display:block;margin-top:-2px;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 19.0413V20.7092L15.9986 26.8336V25.3991L11.7131 23.7928V23.7848L10.3368 23.2366L1.51283 19.9819L10.3384 16.7504V16.7576L11.7146 16.2587L16.0001 14.6524V13.1113L0 19.0413Z" fill="#0F1117"/><path d="M16.0001 24.0696V22.4023L0 16.2773V17.7113L4.2859 19.317V19.3279L5.66227 19.8759L14.4871 23.1294L5.66227 26.3619V26.3546L4.2859 26.8534L0 28.4591V29.9996L16.0001 24.0696Z" fill="#0F1117"/><path d="M20.3237 26.8333H22.1382L28.8006 11H27.2401L25.4927 15.242H25.4809L24.8844 16.6032L21.3438 25.3361L17.826 16.6032H17.8339L17.2911 15.242L15.5436 11H13.8672L20.3237 26.8333Z" fill="#0F1117"/><path d="M23.5229 26.8333H25.3374L31.9998 11H30.4394L28.6919 15.2418H28.6801L28.0837 16.603L24.543 25.3354L21.0252 16.603H21.0331L20.4903 15.2418L18.7429 11H17.0664L23.5229 26.8333Z" fill="#0F1117"/></svg></a>
+  <ul class="nav-links-list">
+    <li><span class="nav-tag-teal">TOOL</span></li>
+    <li><a href="https://sebastian-weber.github.io/uxui-portfolio/">Portfolio</a></li>
+    <li><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank" class="nav-cta-teal">LinkedIn &rarr;</a></li>
+  </ul>
+</nav>
 <div class="wrap">
 
   <!-- HEADER -->
