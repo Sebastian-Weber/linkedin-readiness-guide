@@ -987,6 +987,18 @@ buildSegScores();
 buildChecklist();
 updateProgress();
 drawWheel();
+
+    <footer>
+    <p>Sebastian Weber · UI Designer · Design-to-Code · Köln 2026</p>
+    <p><a href="https://linkedin.com/in/sebastian-weber1708">LinkedIn</a></p>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const total = document.body.scrollHeight - window.innerHeight;
+      document.getElementById('progress').style.width = (scrolled / total * 100) + '%';
+    });
 </script>
 </body>
 </html>
