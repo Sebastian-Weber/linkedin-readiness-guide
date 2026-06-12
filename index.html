@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <head>
-<head>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-64KGYY639W"></script>
   <script>
@@ -13,20 +11,12 @@
   </script>
 
   <meta charset="UTF-8">
-  <!-- rest deines originalen heads -->
-</head>
-
-  <meta charset="UTF-8">
-  <title>...</title>
-  <!-- rest deines heads -->
-</head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/svg+xml" href="/SW_favicon32.svg">
-<title>LinkedIn Profile Readiness Guide · Sebastian Weber</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
-<style>
+  <title>LinkedIn Profile Readiness Guide · Sebastian Weber</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
   :root {
     --teal:       #4A9B8E;
     --teal-bg:    #EDF6F5;
@@ -60,7 +50,6 @@
     min-height: 100vh;
   }
 
-  /* NAV */
   nav {
     padding: 0 48px;
     height: 56px;
@@ -112,7 +101,6 @@
 
   .nav-cta:hover { background: var(--teal-dark) !important; }
 
-  /* HERO */
   .hero {
     max-width: 860px;
     margin: 0 auto;
@@ -162,14 +150,12 @@
   .meta-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
   .meta-value { font-size: 13px; font-weight: 500; color: var(--dark); }
 
-  /* BODY */
   .body {
     max-width: 860px;
     margin: 0 auto;
     padding: 0 48px 120px;
   }
 
-  /* PROGRESS CARD */
   .progress-card {
     background: var(--white);
     border: 1.5px solid var(--border);
@@ -249,7 +235,6 @@
     color: var(--teal);
   }
 
-  /* WHEEL CARD */
   .wheel-card {
     background: var(--white);
     border: 1.5px solid var(--border);
@@ -370,7 +355,6 @@
     line-height: 1.6;
   }
 
-  /* LEGEND */
   .legend-bar {
     display: flex;
     align-items: center;
@@ -407,7 +391,6 @@
   .tag-ongoing { background: #fff8ee; border-color: #fde2b0; color: #a06010; }
   .tag-tip     { background: #f0faf4; border-color: #b8dfc8; color: #256040; }
 
-  /* CHECKLIST SECTIONS */
   .section-card {
     background: var(--white);
     border: 1.5px solid var(--border);
@@ -507,7 +490,6 @@
 
   .section-card.open .section-body { display: block; }
 
-  /* ITEMS */
   .item {
     display: flex;
     align-items: flex-start;
@@ -599,7 +581,6 @@
 
   .flash { animation: flash 0.4s ease; }
 
-  /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
     padding: 24px 48px;
@@ -614,7 +595,6 @@
   footer a { color: var(--muted); text-decoration: none; }
   footer a:hover { color: var(--teal); }
 
-  /* CTA BLOCK */
   .cta-block {
     background: var(--teal-bg);
     border-radius: 16px;
@@ -658,6 +638,7 @@
   }
 
   .btn:hover { background: var(--teal-dark); }
+
   @media (max-width: 600px) {
     nav { padding: 0 20px; }
     .hero { padding: 64px 24px 40px; }
@@ -667,7 +648,7 @@
     .progress-card, .wheel-card { padding: 20px; }
     .reset-btn { position: static; margin-bottom: 16px; }
   }
-</style>
+  </style>
 </head>
 <body>
 
@@ -704,7 +685,6 @@
 
 <div class="body">
 
-  <!-- PROGRESS CARD -->
   <div class="progress-card">
     <button class="reset-btn" id="reset-btn">Reset</button>
     <span class="prog-label">Overall Progress</span>
@@ -717,7 +697,6 @@
     </div>
   </div>
 
-  <!-- WHEEL CARD -->
   <div class="wheel-card">
     <div class="wheel-card-header">
       <div class="wheel-section-label">Visualisation</div>
@@ -733,7 +712,6 @@
     <div class="wheel-note">Each segment score reflects your completion rate for that section. 0% done = 0, 100% done = 10. Complete all items in a section to fill it out.</div>
   </div>
 
-  <!-- LEGEND -->
   <div class="legend-bar">
     <span class="legend-label">Tags</span>
     <span class="tag tag-must">✦ Must-have</span>
@@ -742,10 +720,8 @@
     <span class="tag tag-tip">💡 Pro tip</span>
   </div>
 
-  <!-- CHECKLIST -->
   <div id="checklist"></div>
 
-  <!-- CTA BLOCK -->
   <div class="cta-block">
     <h2>Learn how this tool was designed.</h2>
     <p>From the problem that sparked it to the design decisions behind it.</p>
