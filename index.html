@@ -101,6 +101,59 @@
         }, sec * 1000);
       });
 
+      // 8. Wheel canvas click — segment hit detection
+      var wheelCanvas = document.getElementById('wheel-main');
+      if (wheelCanvas) {
+        wheelCanvas.addEventListener('click', function (e) {
+          var rect = wheelCanvas.getBoundingClientRect();
+          var x = e.clientX - rect.left - wheelCanvas.width / 2;
+          var y = e.clientY - rect.top  - wheelCanvas.height / 2;
+          var dist = Math.sqrt(x * x + y * y);
+          var angle = Math.atan2(y, x) + Math.PI / 2;
+          if (angle < 0) angle += 2 * Math.PI;
+          var segCount = 12;
+          var segIndex = Math.floor(angle / (2 * Math.PI / segCount));
+          var segIds = ['photo','cover','headline','about','experience','education','skills','certs','connections','recommendations','extras','secondlang'];
+          posthog.capture('wheel_canvas_clicked', {
+            segment_index: segIndex,
+            segment_id:    segIds[segIndex] || 'unknown',
+            distance_from_center: Math.round(dist),
+            in_wheel: dist >= 24 && dist <= 110,
+          });
+        });
+      }
+
+      // 9. Tab visibility — track when user leaves and returns
+      var hiddenAt = null;
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          hiddenAt = Date.now();
+          posthog.capture('tab_hidden');
+        } else {
+          var away = hiddenAt ? Math.round((Date.now() - hiddenAt) / 1000) : null;
+          hiddenAt = null;
+          posthog.capture('tab_visible', { away_seconds: away });
+        }
+      });
+
+      // 10. Global completion milestones (25 / 50 / 75 / 100% of all tasks)
+      // Called from updateProgress() after every toggle — attached to window so JS below can reach it
+      var globalMilestones = { 25: false, 50: false, 75: false, 100: false };
+      window._trackGlobalProgress = function (done, total) {
+        if (!total) return;
+        var pct = Math.round(done / total * 100);
+        [25, 50, 75, 100].forEach(function (m) {
+          if (!globalMilestones[m] && pct >= m) {
+            globalMilestones[m] = true;
+            posthog.capture('global_progress_milestone', {
+              milestone_percent: m,
+              tasks_done: done,
+              tasks_total: total,
+            });
+          }
+        });
+      };
+
     });
   </script>
 
@@ -109,9 +162,10 @@
   <link rel="icon" type="image/svg+xml" href="sw_favicon32.svg">
   <title>LinkedIn Profile Readiness Guide · Sebastian Weber</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <style>
   :root {
+    /* Portfolio palette — untouched */
     --teal:       #4A9B8E;
     --teal-bg:    #EDF6F5;
     --teal-dark:  #33766B;
@@ -124,6 +178,23 @@
     --green:      #2d7a4f;
     --done-bg:    #f0faf4;
     --done-border:#b8dfc8;
+
+    /* LinkedIn-blue palette — wheel area only */
+    --li-blue:       #0A66C2;
+    --li-blue-dark:  #004182;
+    --li-blue-bg:    #EEF3F8;
+    --li-blue-border:#C0D8EF;
+    --li-done-bg:    #E8F3FF;
+    --li-done-border:#90BEE0;
+    --li-done-green: #057642;
+    --li-surface:    #F3F2F0;
+    --li-card:       #FFFFFF;
+    --li-text:       #000000;
+    --li-muted:      #666666;
+    --li-border:     #D9D9D9;
+    --li-hover:      #EEF3F8;
+    --li-flash-1:    #DDEEFF;
+    --li-flash-2:    #C5E0F8;
   }
 
   html { scroll-behavior: smooth; }
@@ -215,12 +286,19 @@
   }
 
   .hero h1 {
-    font-size: clamp(28px, 4vw, 44px);
+    font-family: 'Source Serif 4', serif;
+    font-size: clamp(2rem, 5vw, 2.8rem);
     font-weight: 700;
     color: var(--dark);
-    line-height: 1.15;
+    line-height: 1.1;
     letter-spacing: -0.02em;
     margin-bottom: 16px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 700;
+    color: #0A66C2;
   }
 
   .hero-sub {
@@ -244,27 +322,46 @@
   .meta-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
   .meta-value { font-size: 13px; font-weight: 500; color: var(--dark); }
 
+  /* ── Wheel area: LinkedIn-blue theme ── */
+
+  /* Full-width LinkedIn-blue background behind the wheel area */
+  .body-wrapper {
+    background: var(--li-surface);
+    width: 100%;
+  }
+
   .body {
     max-width: 860px;
     margin: 0 auto;
-    padding: 0 48px 120px;
+    padding: 32px 48px 120px;
+    font-family: 'Source Serif 4', serif;
+  }
+
+  /* Force Source Sans 3 on all wheel-area elements — overrides body Montserrat */
+  .body, .body * {
+    font-family: 'Source Serif 4', serif !important;
+  }
+
+  .cta-block, .cta-block * {
+    font-family: 'Montserrat', system-ui, sans-serif !important;
   }
 
   .progress-card {
-    background: var(--white);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
+    background: var(--li-card);
+    border: 1px solid var(--li-border);
+    border-radius: 8px;
     padding: 28px 32px;
     position: relative;
-    margin-bottom: 40px;
+    margin-bottom: 16px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.06);
   }
 
   .prog-label {
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
+    letter-spacing: 0.06em;
+    color: var(--li-muted);
     margin-bottom: 8px;
     display: block;
   }
@@ -277,30 +374,28 @@
   }
 
   .prog-nums {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
-    color: var(--dark);
-    letter-spacing: -0.02em;
+    color: var(--li-text);
     line-height: 1;
   }
 
   .prog-pct {
     font-weight: 700;
     font-size: 20px;
-    color: var(--teal);
-    letter-spacing: -0.01em;
+    color: var(--li-blue);
   }
 
   .prog-track {
     height: 4px;
-    background: var(--border);
+    background: var(--li-blue-border);
     border-radius: 99px;
     overflow: hidden;
   }
 
   .prog-fill {
     height: 100%;
-    background: var(--teal);
+    background: var(--li-blue);
     border-radius: 99px;
     width: 0%;
     transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -311,13 +406,12 @@
     top: 24px;
     right: 24px;
     background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'Montserrat', sans-serif;
+    border: 1px solid var(--li-border);
+    color: var(--li-muted);
     font-weight: 600;
     font-size: 11px;
     padding: 6px 14px;
-    border-radius: 7px;
+    border-radius: 16px;
     cursor: pointer;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -325,23 +419,24 @@
   }
 
   .reset-btn:hover {
-    border-color: var(--teal);
-    color: var(--teal);
+    border-color: var(--li-blue);
+    color: var(--li-blue);
   }
 
   .wheel-card {
-    background: var(--white);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
+    background: var(--li-card);
+    border: 1px solid var(--li-border);
+    border-radius: 8px;
     padding: 28px 32px;
-    margin-bottom: 40px;
+    margin-bottom: 16px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.06);
   }
 
   .wheel-section-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--teal);
-    letter-spacing: 0.12em;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--li-blue);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 6px;
     display: flex;
@@ -354,14 +449,13 @@
     display: block;
     width: 24px;
     height: 1.5px;
-    background: var(--teal);
+    background: var(--li-blue);
   }
 
   .wheel-card-header h2 {
     font-size: 18px;
     font-weight: 700;
-    color: var(--dark);
-    letter-spacing: -0.01em;
+    color: var(--li-text);
     margin-bottom: 20px;
   }
 
@@ -382,15 +476,14 @@
 
   .wheel-avg-text {
     font-size: 12px;
-    color: var(--muted);
+    color: var(--li-muted);
     font-weight: 500;
   }
 
   .wheel-avg-text span {
     font-size: 20px;
     font-weight: 700;
-    color: var(--dark);
-    letter-spacing: -0.02em;
+    color: var(--li-text);
   }
 
   .wheel-right {
@@ -405,9 +498,9 @@
   .seg-emoji { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
 
   .seg-label {
-    font-weight: 500;
-    font-size: 11px;
-    color: var(--muted);
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--li-muted);
     width: 90px;
     flex-shrink: 0;
     white-space: nowrap;
@@ -418,7 +511,7 @@
   .seg-bar-wrap {
     flex: 1;
     height: 3px;
-    background: var(--border);
+    background: var(--li-blue-border);
     border-radius: 99px;
     overflow: hidden;
   }
@@ -427,7 +520,7 @@
     height: 100%;
     border-radius: 99px;
     width: 0%;
-    opacity: 0.7;
+    opacity: 0.8;
     transition: width 0.4s ease;
   }
 
@@ -441,11 +534,11 @@
   }
 
   .wheel-note {
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--li-border);
     margin-top: 20px;
     padding-top: 14px;
-    font-size: 11px;
-    color: var(--muted);
+    font-size: 12px;
+    color: var(--li-muted);
     line-height: 1.6;
   }
 
@@ -454,17 +547,18 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 0.6rem;
-    background: var(--white);
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
+    background: var(--li-card);
+    border: 1px solid var(--li-border);
+    border-radius: 8px;
     padding: 12px 16px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.04);
   }
 
   .legend-label {
     font-size: 11px;
-    font-weight: 700;
-    color: var(--muted);
+    font-weight: 600;
+    color: var(--li-muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-right: 4px;
@@ -480,23 +574,24 @@
     letter-spacing: 0.02em;
   }
 
-  .tag-must    { background: #f0f6ff; border-color: #b3d0f5; color: #0a4a8a; }
+  .tag-must    { background: #EEF3F8; border-color: #90BEE0; color: #004182; }
   .tag-nice    { background: #f3f1ff; border-color: #d4ccf5; color: #5040a0; }
   .tag-ongoing { background: #fff8ee; border-color: #fde2b0; color: #a06010; }
   .tag-tip     { background: #f0faf4; border-color: #b8dfc8; color: #256040; }
 
   .section-card {
-    background: var(--white);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
+    background: var(--li-card);
+    border: 1px solid var(--li-border);
+    border-radius: 8px;
     overflow: hidden;
     margin-bottom: 8px;
     transition: border-color 0.3s, background 0.3s;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.04);
   }
 
   .section-card.all-done {
-    border-color: var(--done-border);
-    background: var(--done-bg);
+    border-color: var(--li-done-border);
+    background: var(--li-done-bg);
   }
 
   .section-header {
@@ -510,34 +605,33 @@
     user-select: none;
   }
 
-  .section-header:hover { background: #F5F4F2; }
+  .section-header:hover { background: var(--li-hover); }
   .sec-emoji { font-size: 1rem; flex-shrink: 0; }
 
   .sec-num {
-    font-weight: 500;
-    font-size: 11px;
-    color: var(--muted);
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--li-muted);
     flex-shrink: 0;
   }
 
   .sec-title {
     font-size: 14px;
     font-weight: 600;
-    letter-spacing: -0.01em;
     flex: 1;
   }
 
   .sec-count {
-    font-weight: 500;
-    font-size: 11px;
-    color: var(--muted);
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--li-muted);
     flex-shrink: 0;
   }
 
   .sec-minibar-wrap {
     width: 44px;
     height: 3px;
-    background: var(--border);
+    background: var(--li-blue-border);
     border-radius: 99px;
     overflow: hidden;
     flex-shrink: 0;
@@ -547,17 +641,17 @@
     height: 100%;
     border-radius: 99px;
     width: 0%;
-    opacity: 0.6;
+    opacity: 0.7;
     transition: width 0.4s ease;
   }
 
   .sec-done-badge {
     display: none;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 10px;
-    background: var(--done-bg);
-    color: var(--green);
-    border: 1px solid var(--done-border);
+    background: var(--li-done-bg);
+    color: var(--li-done-green);
+    border: 1px solid var(--li-done-border);
     border-radius: 99px;
     padding: 3px 10px;
     white-space: nowrap;
@@ -570,7 +664,7 @@
 
   .sec-chevron {
     font-size: 10px;
-    color: var(--muted);
+    color: var(--li-muted);
     transition: transform 0.2s ease;
     flex-shrink: 0;
   }
@@ -579,7 +673,7 @@
 
   .section-body {
     display: none;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--li-border);
   }
 
   .section-card.open .section-body { display: block; }
@@ -589,20 +683,20 @@
     align-items: flex-start;
     gap: 0.8rem;
     padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--li-border);
     cursor: pointer;
     transition: background 0.12s;
   }
 
   .item:last-of-type { border-bottom: none; }
-  .item:hover { background: #F5F4F2; }
+  .item:hover { background: var(--li-hover); }
 
   .item-checkbox {
     width: 17px;
     height: 17px;
-    border-radius: 4px;
-    border: 1.5px solid var(--border);
-    background: var(--white);
+    border-radius: 3px;
+    border: 1.5px solid var(--li-border);
+    background: var(--li-card);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -622,24 +716,24 @@
     transform: rotate(45deg) translate(-1px, -1px);
   }
 
-  .item.done .item-checkbox { background: var(--teal); border-color: var(--teal); }
+  .item.done .item-checkbox { background: var(--li-blue); border-color: var(--li-blue); }
   .item.done .item-checkbox::after { display: block; }
   .item-content { flex: 1; min-width: 0; }
 
   .item-text {
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--text);
-    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--li-text);
+    font-weight: 400;
     transition: color 0.15s;
   }
 
-  .item.done .item-text { text-decoration: line-through; color: var(--muted); }
+  .item.done .item-text { text-decoration: line-through; color: var(--li-muted); }
   .item.done { opacity: 0.6; }
 
   .item-hint {
     font-size: 12px;
-    color: var(--muted);
+    color: var(--li-muted);
     margin-top: 0.2rem;
     font-weight: 400;
   }
@@ -654,11 +748,11 @@
 
   .sec-complete-stamp {
     display: none;
-    font-weight: 700;
-    font-size: 11px;
-    color: var(--green);
-    background: var(--done-bg);
-    border-top: 1px solid var(--done-border);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--li-done-green);
+    background: var(--li-done-bg);
+    border-top: 1px solid var(--li-done-border);
     text-align: center;
     padding: 12px;
     letter-spacing: 0.04em;
@@ -668,8 +762,8 @@
   .all-done .sec-complete-stamp { display: block; }
 
   @keyframes flash {
-    0%   { background: var(--teal-bg); }
-    50%  { background: #c8e8e4; }
+    0%   { background: var(--li-flash-1); }
+    50%  { background: var(--li-flash-2); }
     100% { background: transparent; }
   }
 
@@ -736,7 +830,7 @@
   @media (max-width: 600px) {
     nav { padding: 0 20px; }
     .hero { padding: 64px 24px 40px; }
-    .body { padding: 0 24px 80px; }
+    .body { padding: 0 16px 80px; }
     .wheel-body { flex-direction: column; }
     footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
     .progress-card, .wheel-card { padding: 20px; }
@@ -780,7 +874,7 @@
 
 <div class="hero">
   <span class="hero-tag">Interactive Checklist</span>
-  <h1>LinkedIn Profile<br>Readiness Guide</h1>
+  <h1>LinkedIn Profile <em>Readiness</em> Guide</h1>
   <p class="hero-sub">Track your profile completeness across 12 sections.<br>The wheel updates as you work through each item.</p>
 
   <div class="meta-row">
@@ -794,11 +888,12 @@
     </div>
     <div class="meta-item">
       <span class="meta-label">Designed and built by</span>
-      <span class="meta-value">Sebastian Weber and Claude AI, May 2026</span>
+      <span class="meta-value">Sebastian Weber and Claude AI, built April 24–25th 2026</span>
     </div>
   </div>
 </div>
 
+<div class="body-wrapper">
 <div class="body">
 
   <div class="progress-card">
@@ -844,7 +939,8 @@
     <a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html" class="btn" target="_blank">Read case study →</a>
   </div>
 
-</div>
+</div><!-- /.body -->
+</div><!-- /.body-wrapper -->
 
 <footer>
   <p>Sebastian Weber · UX/UI Designer · Design-to-Code · Köln 2026</p>
@@ -1133,6 +1229,9 @@ function updateProgress() {
   document.getElementById('prog-nums').textContent = `${done} / ${total} tasks`;
   document.getElementById('prog-pct').textContent = `${pct}%`;
   document.getElementById('prog-fill').style.width = pct + '%';
+  if (typeof window._trackGlobalProgress === 'function') {
+    window._trackGlobalProgress(done, total);
+  }
 }
 
 function getSegScore(segId) {
