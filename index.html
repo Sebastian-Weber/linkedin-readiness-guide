@@ -67,8 +67,8 @@
         });
       }
 
-      // 5. Section accordion — only track opens, with score at moment of opening.
-      // Rationale: section_toggled (action:'open') + score_at_open enables Completion Breadth segmentation.
+      // 5. Section accordion — only track opens, with score at moment of opening
+      // Rationale: section_opened + score_at_open enables Completion Breadth segmentation.
       // Closes are not tracked — irrelevant for behavioral segmentation.
       document.querySelectorAll('.section-header').forEach(function (header) {
         header.addEventListener('click', function () {
@@ -77,13 +77,10 @@
           var isOpening = !card.classList.contains('open');
           if (isOpening) {
             var secIndex = ALL_SECTIONS.findIndex(function(s) { return s.id === secId; });
-            // Tracks section opens only. action:'open' unifies with section_toggled pattern.
-            // score_at_open enables completion-breadth segmentation.
-            posthog.capture('section_toggled', {
-              section_id:    secId,
+            posthog.capture('section_opened', {
+              section_id: secId,
               section_index: secIndex,
               score_at_open: getSegScore(secId),
-              action:        'open',
             });
           }
         });
@@ -125,44 +122,37 @@
           var segIndex = Math.floor(angle / (2 * Math.PI / segCount));
           var segIds = ['photo','cover','headline','about','experience','education','skills','certs','connections','recommendations','extras','secondlang'];
           posthog.capture('wheel_canvas_clicked', {
-            segment_index:        segIndex,
-            segment_id:           segIds[segIndex] || 'unknown',
+            segment_index: segIndex,
+            segment_id:    segIds[segIndex] || 'unknown',
             distance_from_center: Math.round(dist),
-            in_wheel:             dist >= 24 && dist <= 110,
+            in_wheel: dist >= 24 && dist <= 110,
           });
         });
       }
 
-      // 9. Session end score — fires when tab becomes hidden.
-      // FIX: Guard against multiple fires per session (e.g. Alt+Tab, notifications, other apps).
-      // sessionEndFired resets when the tab becomes visible again so the next real
-      // hide-event (e.g. closing the tab) is still captured.
-      var sessionEndFired = false;
+      // 9. Session end score — fires when tab becomes hidden (user navigates away or closes)
+      // Captures complete behavioral state: which sections were worked on, scores per section,
+      // total score, and overall completion. This is the primary segmentation snapshot.
       document.addEventListener('visibilitychange', function () {
-        if (document.hidden && !sessionEndFired) {
-          sessionEndFired = true;
+        if (document.hidden) {
           var scoresPerSection = ALL_SECTIONS.map(function(sec) {
             return {
-              section_id:  sec.id,
-              score:       getSegScore(sec.id),
-              items_done:  sec.items.filter(function(it) { return state[it.id]; }).length,
+              section_id: sec.id,
+              score: getSegScore(sec.id),
+              items_done: sec.items.filter(function(it) { return state[it.id]; }).length,
               items_total: sec.items.length,
             };
           });
           var totalScore = parseFloat(
             (scoresPerSection.reduce(function(sum, s) { return sum + s.score; }, 0) / scoresPerSection.length).toFixed(1)
           );
-          var totalDone  = scoresPerSection.reduce(function(sum, s) { return sum + s.items_done;  }, 0);
+          var totalDone = scoresPerSection.reduce(function(sum, s) { return sum + s.items_done; }, 0);
           var totalItems = scoresPerSection.reduce(function(sum, s) { return sum + s.items_total; }, 0);
           posthog.capture('session_end_score', {
             scores_per_section: scoresPerSection,
-            total_score:        totalScore,
-            completion_pct:     totalItems ? Math.round(totalDone / totalItems * 100) : 0,
+            total_score: totalScore,
+            completion_pct: totalItems ? Math.round(totalDone / totalItems * 100) : 0,
           });
-        }
-        // Tab becomes visible again — reset guard so the next hide is captured.
-        if (!document.hidden) {
-          sessionEndFired = false;
         }
       });
 
@@ -176,8 +166,8 @@
             globalMilestones[m] = true;
             posthog.capture('global_progress_milestone', {
               milestone_percent: m,
-              tasks_done:        done,
-              tasks_total:       total,
+              tasks_done: done,
+              tasks_total: total,
             });
           }
         });
@@ -893,7 +883,7 @@
   <a href="https://sebastian-weber.github.io/uxui-portfolio/" class="logo" style="display:flex;align-items:center;line-height:0;"><svg width="40" height="40" style="display:block;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 19.0413V20.7092L15.9986 26.8336V25.3991L11.7131 23.7928V23.7848L10.3368 23.2366L1.51283 19.9819L10.3384 16.7504V16.7576L11.7146 16.2587L16.0001 14.6524V13.1113L0 19.0413Z" fill="#0F1117"/><path d="M16.0001 24.0696V22.4023L0 16.2773V17.7113L4.2859 19.317V19.3279L5.66227 19.8759L14.4871 23.1294L5.66227 26.3619V26.3546L4.2859 26.8534L0 28.4591V29.9996L16.0001 24.0696Z" fill="#0F1117"/><path d="M20.3237 26.8333H22.1382L28.8006 11H27.2401L25.4927 15.242H25.4809L24.8844 16.6032L21.3438 25.3361L17.826 16.6032H17.8339L17.2911 15.242L15.5436 11H13.8672L20.3237 26.8333Z" fill="#0F1117"/><path d="M23.5229 26.8333H25.3374L31.9998 11H30.4394L28.6919 15.2418H28.6801L28.0837 16.603L24.543 25.3354L21.0252 16.603H21.0331L20.4903 15.2418L18.7429 11H17.0664L23.5229 26.8333Z" fill="#0F1117"/></svg></a>
   <ul class="nav-links">
     <li><span class="nav-tag">Tool</span></li>
-    <li><a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html" class="nav-cta">Case study &rarr;</a></li>
+    <li><a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html" class="nav-cta">Case study →</a></li>
   </ul>
 </nav>
 
@@ -913,7 +903,7 @@
     </div>
     <div class="meta-item">
       <span class="meta-label">Designed and built by</span>
-      <span class="meta-value">Sebastian Weber and Claude AI, built April 24&#8211;25th 2026</span>
+      <span class="meta-value">Sebastian Weber and Claude AI, built April 24–25th 2026</span>
     </div>
   </div>
 </div>
@@ -950,10 +940,10 @@
 
   <div class="legend-bar">
     <span class="legend-label">Tags</span>
-    <span class="tag tag-must">&#10022; Must-have</span>
-    <span class="tag tag-nice">&#10792; Nice-to-have</span>
-    <span class="tag tag-ongoing">&#8635; Ongoing habit</span>
-    <span class="tag tag-tip">&#128161; Pro tip</span>
+    <span class="tag tag-must">✦ Must-have</span>
+    <span class="tag tag-nice">◈ Nice-to-have</span>
+    <span class="tag tag-ongoing">↻ Ongoing habit</span>
+    <span class="tag tag-tip">💡 Pro tip</span>
   </div>
 
   <div id="checklist"></div>
@@ -961,14 +951,14 @@
   <div class="cta-block">
     <h2>Learn how this tool was designed.</h2>
     <p>From the problem that sparked it to the design decisions behind it.</p>
-    <a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html" class="btn">Read case study &rarr;</a>
+    <a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html" class="btn">Read case study →</a>
   </div>
 
 </div>
 </div>
 
 <footer>
-  <p>Sebastian Weber &middot; UX/UI Designer &middot; Design-to-Code &middot; K&ouml;ln 2026</p>
+  <p>Sebastian Weber · UX/UI Designer · Design-to-Code · Köln 2026</p>
   <p><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank">LinkedIn</a> &middot; <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html">Impressum &amp; Datenschutz</a></p>
 </footer>
 
@@ -1170,12 +1160,12 @@ function buildChecklist() {
         <div class="sec-minibar-wrap">
           <div class="sec-minibar-fill" id="bar-${sec.id}" style="background:${sec.color};width:${pct}%"></div>
         </div>
-        <span class="sec-done-badge">&#10003; Complete</span>
-        <span class="sec-chevron">&#9662;</span>
+        <span class="sec-done-badge">✓ Complete</span>
+        <span class="sec-chevron">▾</span>
       </div>
       <div class="section-body" id="body-${sec.id}">
         ${sec.items.map(it => buildItemHTML(it)).join('')}
-        <div class="sec-complete-stamp">&#10003; Section complete</div>
+        <div class="sec-complete-stamp">✓ Section complete</div>
       </div>
     `;
     if (done === total) secEl.classList.add('all-done');
@@ -1213,9 +1203,9 @@ function toggleItem(id, sec, secEl) {
 
   if (typeof posthog !== 'undefined') {
     posthog.capture('checklist_item_toggled', {
-      item_id: id,
-      section: sec.id,
-      checked: !!state[id],
+      item_id:   id,
+      section:   sec.id,
+      checked:   !!state[id],
     });
   }
 
@@ -1231,19 +1221,14 @@ function toggleItem(id, sec, secEl) {
 
 function updateSection(sec, secEl) {
   const total = sec.items.length;
-  const done  = sec.items.filter(it => state[it.id]).length;
-  const pct   = total ? Math.round(done / total * 100) : 0;
+  const done = sec.items.filter(it => state[it.id]).length;
+  const pct = total ? Math.round(done / total * 100) : 0;
   document.getElementById('cnt-' + sec.id).textContent = `${done}/${total}`;
   document.getElementById('bar-' + sec.id).style.width = pct + '%';
   const wasAllDone = secEl.classList.contains('all-done');
   secEl.classList.toggle('all-done', done === total);
-  // FIX: section_completed now includes items_done and items_total
   if (!wasAllDone && done === total && typeof posthog !== 'undefined') {
-    posthog.capture('section_completed', {
-      section_id:  sec.id,
-      items_done:  done,
-      items_total: total,
-    });
+    posthog.capture('section_completed', { section_id: sec.id });
   }
 }
 
@@ -1251,11 +1236,11 @@ function updateProgress() {
   let total = 0, done = 0;
   ALL_SECTIONS.forEach(sec => {
     total += sec.items.length;
-    done  += sec.items.filter(it => state[it.id]).length;
+    done += sec.items.filter(it => state[it.id]).length;
   });
   const pct = total ? Math.round(done / total * 100) : 0;
   document.getElementById('prog-nums').textContent = `${done} / ${total} tasks`;
-  document.getElementById('prog-pct').textContent  = `${pct}%`;
+  document.getElementById('prog-pct').textContent = `${pct}%`;
   document.getElementById('prog-fill').style.width = pct + '%';
   if (typeof window._trackGlobalProgress === 'function') {
     window._trackGlobalProgress(done, total);
@@ -1294,9 +1279,9 @@ function drawWheel() {
   SEGMENTS.forEach((seg, i) => {
     const score = getSegScore(seg.id);
     const startAngle = startOffset + i * sliceAngle;
-    const endAngle   = startAngle + sliceAngle;
-    const midAngle   = startAngle + sliceAngle / 2;
-    const fillR      = innerR + ((R - innerR) * Math.max(score, 0.3) / 10);
+    const endAngle = startAngle + sliceAngle;
+    const midAngle = startAngle + sliceAngle / 2;
+    const fillR = innerR + ((R - innerR) * Math.max(score, 0.3) / 10);
 
     ctx.beginPath();
     ctx.moveTo(cx + innerR * Math.cos(startAngle), cy + innerR * Math.sin(startAngle));
@@ -1304,10 +1289,10 @@ function drawWheel() {
     ctx.lineTo(cx + innerR * Math.cos(endAngle), cy + innerR * Math.sin(endAngle));
     ctx.arc(cx, cy, innerR, endAngle, startAngle, true);
     ctx.closePath();
-    ctx.fillStyle   = seg.color + (score > 0 ? '28' : '0d');
+    ctx.fillStyle = seg.color + (score > 0 ? '28' : '0d');
     ctx.fill();
     ctx.strokeStyle = seg.color + (score > 0 ? 'aa' : '40');
-    ctx.lineWidth   = 1;
+    ctx.lineWidth = 1;
     ctx.stroke();
 
     if (score > 0) {
@@ -1319,56 +1304,56 @@ function drawWheel() {
       ctx.fill();
     }
 
-    const barFill = document.getElementById('segbar-'   + seg.id);
+    const barFill = document.getElementById('segbar-' + seg.id);
     const scoreEl = document.getElementById('segscore-' + seg.id);
-    if (barFill) barFill.style.width   = (score * 10) + '%';
-    if (scoreEl) scoreEl.textContent   = score;
+    if (barFill) barFill.style.width = (score * 10) + '%';
+    if (scoreEl) scoreEl.textContent = score;
   });
 
   for (let i = 0; i < N; i++) {
     const angle = startOffset + i * sliceAngle;
     ctx.beginPath();
     ctx.moveTo(cx + innerR * Math.cos(angle), cy + innerR * Math.sin(angle));
-    ctx.lineTo(cx + R      * Math.cos(angle), cy + R      * Math.sin(angle));
+    ctx.lineTo(cx + R * Math.cos(angle), cy + R * Math.sin(angle));
     ctx.strokeStyle = '#e0deda';
-    ctx.lineWidth   = 1;
+    ctx.lineWidth = 1;
     ctx.stroke();
   }
 
   ctx.beginPath();
   ctx.arc(cx, cy, R, 0, 2 * Math.PI);
   ctx.strokeStyle = '#d0cec7';
-  ctx.lineWidth   = 1.5;
+  ctx.lineWidth = 1.5;
   ctx.stroke();
 
   ctx.beginPath();
   ctx.arc(cx, cy, innerR, 0, 2 * Math.PI);
-  ctx.fillStyle   = '#ffffff';
+  ctx.fillStyle = '#ffffff';
   ctx.fill();
   ctx.strokeStyle = '#d0cec7';
-  ctx.lineWidth   = 1;
+  ctx.lineWidth = 1;
   ctx.stroke();
 
   const scores = SEGMENTS.map(s => getSegScore(s.id));
-  const avg    = scores.reduce((a, b) => a + b, 0) / scores.length;
+  const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
   const avgStr = avg.toFixed(1);
 
-  ctx.textAlign    = 'center';
+  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle    = '#1a1a1a';
-  ctx.font         = 'bold 13px sans-serif';
+  ctx.fillStyle = '#1a1a1a';
+  ctx.font = 'bold 13px sans-serif';
   ctx.fillText(avgStr, cx, cy - 4);
   ctx.fillStyle = '#7a7a7a';
-  ctx.font      = '9px sans-serif';
+  ctx.font = '9px sans-serif';
   ctx.fillText('avg', cx, cy + 8);
 
   SEGMENTS.forEach((seg, i) => {
     const midAngle = startOffset + i * sliceAngle + sliceAngle / 2;
-    const labelR   = R + 15;
+    const labelR = R + 15;
     const lx = cx + labelR * Math.cos(midAngle);
     const ly = cy + labelR * Math.sin(midAngle);
-    ctx.font         = '11px serif';
-    ctx.textAlign    = 'center';
+    ctx.font = '11px serif';
+    ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(seg.emoji, lx, ly);
   });
@@ -1382,7 +1367,7 @@ function buildSegScores() {
   container.innerHTML = '';
   SEGMENTS.forEach(seg => {
     const score = getSegScore(seg.id);
-    const row   = document.createElement('div');
+    const row = document.createElement('div');
     row.className = 'seg-row';
     row.innerHTML = `
       <span class="seg-emoji">${seg.emoji}</span>
@@ -1411,7 +1396,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
 
 window.addEventListener('scroll', () => {
   const scrolled = window.scrollY;
-  const total    = document.body.scrollHeight - window.innerHeight;
+  const total = document.body.scrollHeight - window.innerHeight;
   document.getElementById('progress').style.width = (scrolled / total * 100) + '%';
 });
 
