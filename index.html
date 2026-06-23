@@ -68,7 +68,7 @@
       }
 
       // 5. Section accordion — only track opens, with score at moment of opening.
-      // Rationale: section_opened + score_at_open enables Completion Breadth segmentation.
+      // Rationale: section_toggled (action:'open') + score_at_open enables Completion Breadth segmentation.
       // Closes are not tracked — irrelevant for behavioral segmentation.
       document.querySelectorAll('.section-header').forEach(function (header) {
         header.addEventListener('click', function () {
@@ -77,10 +77,13 @@
           var isOpening = !card.classList.contains('open');
           if (isOpening) {
             var secIndex = ALL_SECTIONS.findIndex(function(s) { return s.id === secId; });
-            posthog.capture('section_opened', {
+            // Tracks section opens only. action:'open' unifies with section_toggled pattern.
+            // score_at_open enables completion-breadth segmentation.
+            posthog.capture('section_toggled', {
               section_id:    secId,
               section_index: secIndex,
               score_at_open: getSegScore(secId),
+              action:        'open',
             });
           }
         });
