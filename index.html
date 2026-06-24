@@ -59,22 +59,15 @@
         });
       }
 
-      // 4. Reset button
-      var resetBtn = document.getElementById('reset-btn');
-      if (resetBtn) {
-        resetBtn.addEventListener('click', function () {
-          posthog.capture('checklist_reset');
-        });
-      }
-
-      // 5. Section accordion — only track opens, with score at moment of opening
-      // Rationale: section_opened + score_at_open enables Completion Breadth segmentation.
-      // Closes are not tracked — irrelevant for behavioral segmentation.
+      // 4. Section accordion — only track opens, with score at moment of opening.
+      // The toggle listener in buildChecklist() runs first, so by the time this
+      // listener fires the 'open' class is already applied. Presence of 'open'
+      // therefore means the user just opened the section.
       document.querySelectorAll('.section-header').forEach(function (header) {
         header.addEventListener('click', function () {
           var secId = header.getAttribute('data-sec');
           var card = header.closest('.section-card');
-          var isOpening = !card.classList.contains('open');
+          var isOpening = card.classList.contains('open');
           if (isOpening) {
             var secIndex = ALL_SECTIONS.findIndex(function(s) { return s.id === secId; });
             posthog.capture('section_opened', {
@@ -86,7 +79,7 @@
         });
       });
 
-      // 6. Scroll depth (25 / 50 / 75 / 100%)
+      // 5. Scroll depth (25 / 50 / 75 / 100%)
       var scrollMilestones = { 25: false, 50: false, 75: false, 100: false };
       window.addEventListener('scroll', function () {
         var scrolled = window.scrollY;
@@ -101,14 +94,14 @@
         });
       }, { passive: true });
 
-      // 7. Time on page (30s / 60s / 120s)
+      // 6. Time on page (30s / 60s / 120s)
       [30, 60, 120].forEach(function (sec) {
         setTimeout(function () {
           posthog.capture('time_on_page', { seconds: sec });
         }, sec * 1000);
       });
 
-      // 8. Wheel canvas click — segment hit detection
+      // 7. Wheel canvas click — segment hit detection
       var wheelCanvas = document.getElementById('wheel-main');
       if (wheelCanvas) {
         wheelCanvas.addEventListener('click', function (e) {
@@ -130,9 +123,7 @@
         });
       }
 
-      // 9. Session end score — fires when tab becomes hidden (user navigates away or closes)
-      // Captures complete behavioral state: which sections were worked on, scores per section,
-      // total score, and overall completion. This is the primary segmentation snapshot.
+      // 8. Session end score — fires when tab becomes hidden
       document.addEventListener('visibilitychange', function () {
         if (document.hidden) {
           var scoresPerSection = ALL_SECTIONS.map(function(sec) {
@@ -156,7 +147,7 @@
         }
       });
 
-      // 10. Global completion milestones (25 / 50 / 75 / 100% of all tasks)
+      // 9. Global completion milestones (25 / 50 / 75 / 100% of all tasks)
       var globalMilestones = { 25: false, 50: false, 75: false, 100: false };
       window._trackGlobalProgress = function (done, total) {
         if (!total) return;
@@ -1385,6 +1376,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   if (!confirm('Reset all progress? This cannot be undone.')) return;
   state = {};
   saveState();
+  if (typeof posthog !== 'undefined') posthog.capture('checklist_reset');
   document.querySelectorAll('.item').forEach(el => el.classList.remove('done'));
   ALL_SECTIONS.forEach(sec => {
     const secEl = document.getElementById('sec-' + sec.id);
