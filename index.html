@@ -1,26 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google Analytics 4 (consent-gated) -->
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-
-    function loadGA4() {
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-64KGYY639W';
-      document.head.appendChild(s);
-      gtag('js', new Date());
-      gtag('config', 'G-64KGYY639W');
-    }
-
-    if (localStorage.getItem('ga_consent') === 'granted') {
-      loadGA4();
-    }
-  </script>
-
-  <!-- PostHog — Enhanced Tracking -->
+  <!-- PostHog — Enhanced Tracking (consent-gated: nothing is captured, including -->
+  <!-- session recording, until the visitor accepts the cookie banner below.) -->
   <script>
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="Pn On init Wn Qn ki Gn Kn zn capture calculateEventProperties rs register register_once register_for_session unregister unregister_for_session os getFeatureFlag getFeatureFlagPayload getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync ls identify setPersonProperties unsetPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty ns es createPersonProfile setInternalOrTestUser ss Hn cs opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing Yn debug Ci gr getPageViewId captureTraceFeedback captureTraceMetric qn".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
 
@@ -28,8 +10,15 @@
       api_host: 'https://eu.i.posthog.com',
       defaults: '2026-05-30',
       person_profiles: 'identified_only',
+      opt_out_capturing_by_default: true,
       session_recording: {
-        maskAllInputs: false,
+        maskAllInputs: true,
+      },
+      loaded: function (ph) {
+        if (!ph.has_opted_in_capturing() && !ph.has_opted_out_capturing()) {
+          var banner = document.getElementById('cookie-banner');
+          if (banner) banner.style.display = 'flex';
+        }
       },
     });
 
@@ -59,27 +48,7 @@
         });
       }
 
-      // 4. Section accordion — only track opens, with score at moment of opening.
-      // The toggle listener in buildChecklist() runs first, so by the time this
-      // listener fires the 'open' class is already applied. Presence of 'open'
-      // therefore means the user just opened the section.
-      document.querySelectorAll('.section-header').forEach(function (header) {
-        header.addEventListener('click', function () {
-          var secId = header.getAttribute('data-sec');
-          var card = header.closest('.section-card');
-          var isOpening = card.classList.contains('open');
-          if (isOpening) {
-            var secIndex = ALL_SECTIONS.findIndex(function(s) { return s.id === secId; });
-            posthog.capture('section_opened', {
-              section_id: secId,
-              section_index: secIndex,
-              score_at_open: getSegScore(secId),
-            });
-          }
-        });
-      });
-
-      // 5. Scroll depth (25 / 50 / 75 / 100%)
+      // 4. Scroll depth (25 / 50 / 75 / 100%)
       var scrollMilestones = { 25: false, 50: false, 75: false, 100: false };
       window.addEventListener('scroll', function () {
         var scrolled = window.scrollY;
@@ -94,14 +63,14 @@
         });
       }, { passive: true });
 
-      // 6. Time on page (30s / 60s / 120s)
+      // 5. Time on page (30s / 60s / 120s)
       [30, 60, 120].forEach(function (sec) {
         setTimeout(function () {
           posthog.capture('time_on_page', { seconds: sec });
         }, sec * 1000);
       });
 
-      // 7. Wheel canvas click — segment hit detection
+      // 6. Wheel canvas click — segment hit detection
       var wheelCanvas = document.getElementById('wheel-main');
       if (wheelCanvas) {
         wheelCanvas.addEventListener('click', function (e) {
@@ -123,7 +92,7 @@
         });
       }
 
-      // 8. Session end score — fires when tab becomes hidden
+      // 7. Session end score — fires when tab becomes hidden
       document.addEventListener('visibilitychange', function () {
         if (document.hidden) {
           var scoresPerSection = ALL_SECTIONS.map(function(sec) {
@@ -147,7 +116,7 @@
         }
       });
 
-      // 9. Global completion milestones (25 / 50 / 75 / 100% of all tasks)
+      // 8. Global completion milestones (25 / 50 / 75 / 100% of all tasks)
       var globalMilestones = { 25: false, 50: false, 75: false, 100: false };
       window._trackGlobalProgress = function (done, total) {
         if (!total) return;
@@ -863,7 +832,7 @@
 <body>
 
 <div id="cookie-banner" style="display:none;">
-  <p>Diese Seite verwendet Google Analytics. <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html">Datenschutz</a></p>
+  <p>Diese Seite verwendet PostHog, um anonymisierte Nutzungsstatistiken und Sitzungsaufzeichnungen zu erstellen. <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html">Datenschutz</a></p>
   <button class="cookie-btn cookie-decline" onclick="decideConsent(false)">Ablehnen</button>
   <button class="cookie-btn cookie-accept" onclick="decideConsent(true)">Akzeptieren</button>
 </div>
@@ -1162,7 +1131,15 @@ function buildChecklist() {
     if (done === total) secEl.classList.add('all-done');
     container.appendChild(secEl);
     secEl.querySelector('.section-header').addEventListener('click', () => {
+      const isOpening = !secEl.classList.contains('open');
       secEl.classList.toggle('open');
+      if (isOpening && typeof posthog !== 'undefined') {
+        posthog.capture('section_opened', {
+          section_id: sec.id,
+          section_index: idx,
+          score_at_open: getSegScore(sec.id),
+        });
+      }
     });
     sec.items.forEach(it => {
       const row = secEl.querySelector('#item-' + it.id);
@@ -1402,18 +1379,13 @@ drawWheel();
 <script>
   function decideConsent(accepted) {
     document.getElementById('cookie-banner').style.display = 'none';
-    if (typeof posthog !== 'undefined') {
-      posthog.capture('cookie_consent', { accepted: accepted });
-    }
     if (accepted) {
-      localStorage.setItem('ga_consent', 'granted');
-      loadGA4();
+      posthog.opt_in_capturing();
     } else {
-      localStorage.setItem('ga_consent', 'denied');
+      posthog.opt_out_capturing();
     }
-  }
-  if (!localStorage.getItem('ga_consent')) {
-    document.getElementById('cookie-banner').style.display = 'flex';
+    // No-op if declined — capture() is silently dropped once opted out.
+    posthog.capture('cookie_consent', { accepted: accepted });
   }
 </script>
 
