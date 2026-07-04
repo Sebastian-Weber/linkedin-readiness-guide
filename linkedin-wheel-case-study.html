@@ -746,6 +746,8 @@
     <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html">
       Impressum &amp; Datenschutz
     </a>
+    ·
+    <a href="#" id="cookie-settings-link">Cookie-Einstellungen</a>
   </p>
 </footer>
 
@@ -836,6 +838,14 @@
         posthog.capture('linkedin_clicked', { page: 'linkedin-case-study' });
       });
     });
+
+    var settingsLink = document.getElementById('cookie-settings-link');
+    if (settingsLink) {
+      settingsLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('cookie-banner').style.display = 'flex';
+      });
+    }
   });
 </script>
 
