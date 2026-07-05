@@ -930,6 +930,11 @@ const TAG_CONFIG = {
 
 const ALL_SECTIONS = PHASES.flatMap(p => p.sections);
 
+const WHEEL_R = 118, WHEEL_INNER_R = 26;
+const WHEEL_START_OFFSET = -Math.PI / 2;
+const MILESTONES = [25, 50, 75, 100];
+const firedMilestones = new Set();
+
 let state = {};
 function loadState() {
   try { state = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e) { state = {}; }
@@ -970,7 +975,11 @@ function buildChecklist() {
     if (idx === 0) secEl.classList.add('open');
     container.appendChild(secEl);
     secEl.querySelector('.section-header').addEventListener('click', () => {
+      const opening = !secEl.classList.contains('open');
       secEl.classList.toggle('open');
+      if (opening) {
+        posthog.capture('section_opened', { section_id: sec.id });
+      }
     });
     sec.items.forEach(it => {
       const row = secEl.querySelector('#item-' + it.id);
@@ -997,8 +1006,10 @@ function buildItemHTML(it) {
 }
 
 function toggleItem(id, sec, secEl) {
+  const wasComplete = sec.items.every(it => state[it.id]);
   state[id] = !state[id];
   saveState();
+  posthog.capture('checklist_item_toggled', { checked: !!state[id], section: sec.id, item_id: id });
   const row = document.getElementById('item-' + id);
   row.classList.toggle('done', !!state[id]);
   secEl.classList.remove('flash');
@@ -1008,6 +1019,10 @@ function toggleItem(id, sec, secEl) {
   updateSection(sec, secEl);
   updateProgress();
   drawWheel();
+  const isComplete = sec.items.every(it => state[it.id]);
+  if (isComplete && !wasComplete) {
+    posthog.capture('section_completed', { section_id: sec.id });
+  }
 }
 
 function updateSection(sec, secEl) {
@@ -1029,6 +1044,22 @@ function updateProgress() {
   document.getElementById('prog-nums').textContent = `${done} / ${total} tasks`;
   document.getElementById('prog-pct').textContent = `${pct}%`;
   document.getElementById('prog-fill').style.width = pct + '%';
+  checkMilestones(done, total);
+}
+
+function checkMilestones(done, total) {
+  if (!total) return;
+  const pct = Math.round(done / total * 100);
+  MILESTONES.forEach(m => {
+    if (pct >= m && !firedMilestones.has(m)) {
+      firedMilestones.add(m);
+      posthog.capture('global_progress_milestone', {
+        milestone_percent: m,
+        tasks_done: done,
+        tasks_total: total,
+      });
+    }
+  });
 }
 
 function getSegScore(segId) {
@@ -1044,10 +1075,10 @@ function drawWheel() {
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const cx = W / 2, cy = H / 2;
-  const R = 118, innerR = 26;
+  const R = WHEEL_R, innerR = WHEEL_INNER_R;
   const N = SEGMENTS.length;
   const sliceAngle = (2 * Math.PI) / N;
-  const startOffset = -Math.PI / 2;
+  const startOffset = WHEEL_START_OFFSET;
   ctx.clearRect(0, 0, W, H);
   for (let i = 1; i <= 10; i++) {
     const r = innerR + ((R - innerR) * i / 10);
@@ -1156,6 +1187,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   if (!confirm('Reset all progress? This cannot be undone.')) return;
   state = {};
   saveState();
+  firedMilestones.clear();
   document.querySelectorAll('.item').forEach(el => el.classList.remove('done'));
   ALL_SECTIONS.forEach(sec => {
     const secEl = document.getElementById('sec-' + sec.id);
@@ -1163,6 +1195,37 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   });
   updateProgress();
   drawWheel();
+});
+
+document.getElementById('wheel-main').addEventListener('click', (e) => {
+  const canvas = e.currentTarget;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = (e.clientX - rect.left) * scaleX;
+  const y = (e.clientY - rect.top) * scaleY;
+  const cx = canvas.width / 2, cy = canvas.height / 2;
+  const dx = x - cx, dy = y - cy;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  const inWheel = distance >= WHEEL_INNER_R && distance <= WHEEL_R;
+  const sliceAngle = (2 * Math.PI) / SEGMENTS.length;
+  let rel = Math.atan2(dy, dx) - WHEEL_START_OFFSET;
+  rel = ((rel % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  const segmentIndex = Math.floor(rel / sliceAngle) % SEGMENTS.length;
+  const segment = SEGMENTS[segmentIndex];
+  let itemsDone = 0, itemsTotal = 0;
+  ALL_SECTIONS.forEach(sec => {
+    itemsTotal += sec.items.length;
+    itemsDone += sec.items.filter(it => state[it.id]).length;
+  });
+  posthog.capture('wheel_canvas_clicked', {
+    segment_id: segment.id,
+    segment_index: segmentIndex,
+    in_wheel: inWheel,
+    distance_from_center: Math.round(distance),
+    items_done: itemsDone,
+    items_total: itemsTotal,
+  });
 });
 
 loadState();
