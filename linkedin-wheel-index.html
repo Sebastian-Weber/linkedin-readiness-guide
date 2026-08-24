@@ -645,9 +645,30 @@
 
   .nav-cta-teal:hover { background: #3D8577 !important; }
 
+  /* ══ ERGÄNZT — fehlte komplett: Styling für die tatsächlich verwendete .nav-links Nav ══ */
+  .nav-links {
+    display: flex; gap: 28px; list-style: none; align-items: center;
+  }
+  .nav-links a, .nav-current {
+    font-size: 13px; color: #7A7A7A;
+    text-decoration: none; font-weight: 500;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: #1A1A1A; }
+  .nav-current { color: #1A1A1A; font-weight: 700; }
+  .nav-flex-item { display: inline-block; min-width: 76px; text-align: center; }
+  .lang-switch { display: flex; align-items: center; gap: 6px; }
+  .lang-switch button {
+    font-family: inherit; background: none; border: none;
+    font-size: 13px; font-weight: 500; color: #7A7A7A; cursor: pointer; padding: 2px;
+    transition: color 0.15s;
+  }
+  .lang-switch button:hover { color: #1A1A1A; }
+  .lang-switch button.active { color: #1A1A1A; font-weight: 700; }
+  .lang-switch .sep { color: #E0DEDA; }
+
   @media (max-width: 860px) {
     nav { padding: 0 20px; }
-    .nav-links-list { display: none; }
   }
 
   @media (max-width: 560px) {
