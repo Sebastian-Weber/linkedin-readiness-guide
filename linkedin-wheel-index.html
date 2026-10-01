@@ -27,7 +27,7 @@
   <title>LinkedIn Profile Readiness Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <style>
 :root {
   --bg: #f7f6f3;
@@ -95,11 +95,12 @@
 
   .subtitle {
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 400;
+    font-style: italic;
     color: var(--muted);
-    line-height: 1.7;
-    max-width: 560px;
+    line-height: 1.65;
+    max-width: 580px;
   }
 
   .progress-card {
@@ -767,9 +768,9 @@
 <body>
 
 <div id="cookie-banner" style="display:none;">
-  <p>Diese Seite verwendet PostHog Analytics. <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" target="_blank">Datenschutz</a></p>
-  <button class="cookie-btn cookie-decline" onclick="decideConsent(false)">Ablehnen</button>
-  <button class="cookie-btn cookie-accept" onclick="decideConsent(true)">Akzeptieren</button>
+  <p data-i18n="cookie-text">Diese Seite verwendet PostHog Analytics. <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" target="_blank">Datenschutz</a></p>
+  <button class="cookie-btn cookie-decline" onclick="decideConsent(false)" data-i18n="cookie-decline">Ablehnen</button>
+  <button class="cookie-btn cookie-accept" onclick="decideConsent(true)" data-i18n="cookie-accept">Akzeptieren</button>
 </div>
 
 <nav>
@@ -787,7 +788,7 @@
       </li>
       <li><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank">LinkedIn</a></li>
     </ul>
-    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navDrawer" aria-label="Menü öffnen">
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navDrawer" aria-label="Open menu" data-i18n-aria="menu-open">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
   </nav>
@@ -796,7 +797,7 @@
 
   <aside class="nav-drawer" id="navDrawer" data-open="false" aria-hidden="true">
     <div class="nav-drawer__header">
-      <button class="nav-drawer__close" id="navDrawerClose" aria-label="Menü schließen">
+      <button class="nav-drawer__close" id="navDrawerClose" aria-label="Close menu" data-i18n-aria="menu-close">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
@@ -819,13 +820,13 @@
 <div class="wrap">
 
   <header class="page-header">
-    <h1>LinkedIn Profile <em>Readiness</em> Guide</h1>
-    <p class="subtitle">A structured, step-by-step checklist covering every section of a strong LinkedIn profile — from must-haves to nice-to-haves. Work through each section in order and track your progress as you go.</p>
+    <h1 data-i18n="h1">LinkedIn Profile <em>Readiness</em> Guide</h1>
+    <p class="subtitle" data-i18n="subtitle">A structured, step-by-step checklist covering every section of a strong LinkedIn profile — from must-haves to nice-to-haves. Work through each section in order and track your progress as you go.</p>
   </header>
 
   <div class="progress-card">
-    <button class="reset-btn" id="reset-btn">↺ Reset</button>
-    <span class="prog-label">Overall completion</span>
+    <button class="reset-btn" id="reset-btn" data-i18n="reset">↺ Reset</button>
+    <span class="prog-label" data-i18n="prog-label">Overall completion</span>
     <div class="prog-row">
       <div class="prog-nums" id="prog-nums">0 / 0 tasks</div>
       <div class="prog-pct" id="prog-pct">0%</div>
@@ -838,7 +839,7 @@
   <div class="wheel-card">
     <div class="wheel-card-header">
       <h2>Wheel of <em>Readiness</em></h2>
-      <span class="wheel-subtitle">Updates live as you check off items</span>
+      <span class="wheel-subtitle" data-i18n="wheel-sub">Updates live as you check off items</span>
     </div>
     <div class="wheel-body">
       <div class="wheel-left">
@@ -847,22 +848,22 @@
       </div>
       <div class="wheel-right" id="seg-scores"></div>
     </div>
-    <div class="wheel-note">💡 Each segment score reflects your completion rate for that section — 0% done = 0, 100% done = 10. Complete all items in a section to fill it out.</div>
+    <div class="wheel-note" data-i18n="wheel-note">💡 Each segment score reflects your completion rate for that section — 0% done = 0, 100% done = 10. Complete all items in a section to fill it out.</div>
   </div>
 
   <div class="legend-bar">
     <span class="legend-label">Tags:</span>
-    <span class="tag tag-must">✦ Must-have</span>
-    <span class="tag tag-nice">◈ Nice-to-have</span>
-    <span class="tag tag-ongoing">↻ Ongoing habit</span>
-    <span class="tag tag-tip">💡 Pro tip</span>
+    <span class="tag tag-must" data-i18n="tag-must">✦ Must-have</span>
+    <span class="tag tag-nice" data-i18n="tag-nice">◈ Nice-to-have</span>
+    <span class="tag tag-ongoing" data-i18n="tag-ongoing">↻ Ongoing habit</span>
+    <span class="tag tag-tip" data-i18n="tag-tip">💡 Pro tip</span>
   </div>
 
   <div class="wheel-card">
     <div class="wheel-card-header">
-      <h2>How to <em>get going</em></h2>
+      <h2 data-i18n="howto-h2">How to <em>get going</em></h2>
     </div>
-    <ol class="howto-list">
+    <ol class="howto-list" data-i18n="howto-list">
       <li><strong>Expand a section</strong> — click any section header below (like "Profile Picture") to reveal its checklist items. The first one is already open for you.</li>
       <li><strong>Check things off</strong> — click an item to mark it done. Your progress saves automatically in this browser, no account needed.</li>
       <li><strong>Follow the tags</strong> — ✦ Must-have matters most, ◈ Nice-to-have adds polish, ↻ Ongoing habit needs regular upkeep, and 💡 Pro tip gives bonus context.</li>
@@ -874,12 +875,12 @@
   <div id="checklist"></div>
 
   <div class="end-cta">
-    <h2 class="end-cta-heading">See how this tool was <em>built.</em></h2>
-    <p class="end-cta-sub">From a real job-search problem to a deployed interactive tool — read the design and build story behind the Wheel of Readiness.</p>
-    <a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html" class="end-cta-btn">Read case study &rarr;</a>
+    <h2 class="end-cta-heading" data-i18n="cta-h">See how this tool was <em>built.</em></h2>
+    <p class="end-cta-sub" data-i18n="cta-sub">From a real job-search problem to a deployed interactive tool — read the design and build story behind the Wheel of Readiness.</p>
+    <a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html" class="end-cta-btn" data-i18n="cta-btn">Read case study &rarr;</a>
   </div>
 
-  <footer class="page-footer">LinkedIn Profile Readiness Guide &nbsp;·&nbsp; <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" style="color:var(--muted);text-decoration:none;">Impressum &amp; Datenschutz</a> &nbsp;·&nbsp; <a href="#" id="cookie-settings-link" style="color:var(--muted);text-decoration:none;">Cookie-Einstellungen</a></footer>
+  <footer class="page-footer">LinkedIn Profile Readiness Guide &nbsp;·&nbsp; <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" style="color:var(--muted);text-decoration:none;" data-i18n="footer-imprint">Impressum &amp; Datenschutz</a> &nbsp;·&nbsp; <a href="#" id="cookie-settings-link" style="color:var(--muted);text-decoration:none;" data-i18n="footer-cookies">Cookie-Einstellungen</a></footer>
 </div>
 
 <script>
@@ -887,19 +888,115 @@ const LS_KEY = 'li-readiness-poc-v1';
 
 const CHEVRON_SVG = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.29289 8.29289C4.68342 7.90237 5.31658 7.90237 5.70711 8.29289L12 14.5858L18.2929 8.29289C18.6834 7.90237 19.3166 7.90237 19.7071 8.29289C20.0976 8.68342 20.0976 9.31658 19.7071 9.70711L12.7071 16.7071C12.3166 17.0976 11.6834 17.0976 11.2929 16.7071L4.29289 9.70711C3.90237 9.31658 3.90237 8.68342 4.29289 8.29289Z" fill="currentColor"/></svg>';
 
+const LANG_KEY = 'sw-lang';
+
+const I18N = {
+  en: {
+    'doc-title': 'LinkedIn Profile Readiness Guide',
+    'nav-portfolio': 'Portfolio',
+    'nav-about': 'About',
+    'nav-imprint': 'Imprint',
+    'menu-open': 'Open menu',
+    'menu-close': 'Close menu',
+    'h1': 'LinkedIn Profile <em>Readiness</em> Guide',
+    'subtitle': 'A structured, step-by-step checklist covering every section of a strong LinkedIn profile — from must-haves to nice-to-haves. Work through each section in order and track your progress as you go.',
+    'reset': '↺ Reset',
+    'reset-confirm': 'Reset all progress? This cannot be undone.',
+    'prog-label': 'Overall completion',
+    'tasks': 'tasks',
+    'wheel-sub': 'Updates live as you check off items',
+    'avg': 'avg',
+    'wheel-note': '💡 Each segment score reflects your completion rate for that section — 0% done = 0, 100% done = 10. Complete all items in a section to fill it out.',
+    'tag-must': '✦ Must-have',
+    'tag-nice': '◈ Nice-to-have',
+    'tag-ongoing': '↻ Ongoing habit',
+    'tag-tip': '💡 Pro tip',
+    'howto-h2': 'How to <em>get going</em>',
+    'howto-list':
+      '<li><strong>Expand a section</strong> — click any section header below (like "Profile Picture") to reveal its checklist items. The first one is already open for you.</li>' +
+      '<li><strong>Check things off</strong> — click an item to mark it done. Your progress saves automatically in this browser, no account needed.</li>' +
+      '<li><strong>Follow the tags</strong> — ✦ Must-have matters most, ◈ Nice-to-have adds polish, ↻ Ongoing habit needs regular upkeep, and 💡 Pro tip gives bonus context.</li>' +
+      '<li><strong>Watch your score</strong> — the progress bar and the Wheel of Readiness above update live as you complete tasks.</li>' +
+      '<li><strong>Start fresh anytime</strong> — use the Reset button to clear all progress.</li>',
+    'complete': '✓ Complete',
+    'section-complete': '✓ Section complete',
+    'cta-h': 'See how this tool was <em>built.</em>',
+    'cta-sub': 'From a real job-search problem to a deployed interactive tool — read the design and build story behind the Wheel of Readiness.',
+    'cta-btn': 'Read case study &rarr;',
+    'footer-imprint': 'Imprint &amp; Privacy',
+    'footer-cookies': 'Cookie settings',
+    'cookie-text': 'This site uses PostHog Analytics. <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" target="_blank">Privacy Policy</a>',
+    'cookie-decline': 'Decline',
+    'cookie-accept': 'Accept',
+  },
+  de: {
+    'doc-title': 'LinkedIn-Profil Readiness Guide',
+    'nav-portfolio': 'Portfolio',
+    'nav-about': 'Über mich',
+    'nav-imprint': 'Impressum',
+    'menu-open': 'Menü öffnen',
+    'menu-close': 'Menü schließen',
+    'h1': 'LinkedIn-Profil <em>Readiness</em> Guide',
+    'subtitle': 'Eine strukturierte Schritt-für-Schritt-Checkliste für jeden Bereich eines starken LinkedIn-Profils, von den Must-haves bis zu den Nice-to-haves. Arbeite die Bereiche der Reihe nach durch und verfolge dabei deinen Fortschritt.',
+    'reset': '↺ Zurücksetzen',
+    'reset-confirm': 'Gesamten Fortschritt zurücksetzen? Das kann nicht rückgängig gemacht werden.',
+    'prog-label': 'Gesamtfortschritt',
+    'tasks': 'Aufgaben',
+    'wheel-sub': 'Aktualisiert sich live beim Abhaken',
+    'avg': 'Ø',
+    'wheel-note': '💡 Jeder Segmentwert zeigt deinen Fortschritt im jeweiligen Bereich: 0 % erledigt = 0, 100 % erledigt = 10. Erledige alle Punkte eines Bereichs, um das Segment zu füllen.',
+    'tag-must': '✦ Pflicht',
+    'tag-nice': '◈ Optional',
+    'tag-ongoing': '↻ Laufende Gewohnheit',
+    'tag-tip': '💡 Profi-Tipp',
+    'howto-h2': 'So <em>legst du los</em>',
+    'howto-list':
+      '<li><strong>Bereich aufklappen:</strong> Klicke auf eine Bereichsüberschrift unten (z. B. „Profilbild“), um die Checklistenpunkte anzuzeigen. Der erste Bereich ist bereits geöffnet.</li>' +
+      '<li><strong>Punkte abhaken:</strong> Klicke auf einen Punkt, um ihn als erledigt zu markieren. Dein Fortschritt wird automatisch in diesem Browser gespeichert, ganz ohne Konto.</li>' +
+      '<li><strong>Tags beachten:</strong> ✦ Pflicht ist am wichtigsten, ◈ Optional sorgt für Feinschliff, ↻ Laufende Gewohnheit braucht regelmäßige Pflege und 💡 Profi-Tipp liefert zusätzlichen Kontext.</li>' +
+      '<li><strong>Score verfolgen:</strong> Der Fortschrittsbalken und das Wheel of Readiness oben aktualisieren sich live, während du Aufgaben erledigst.</li>' +
+      '<li><strong>Jederzeit neu starten:</strong> Mit dem Button „Zurücksetzen“ löschst du deinen gesamten Fortschritt.</li>',
+    'complete': '✓ Erledigt',
+    'section-complete': '✓ Bereich abgeschlossen',
+    'cta-h': 'So ist dieses Tool <em>entstanden.</em>',
+    'cta-sub': 'Von einem echten Problem aus der Jobsuche zum veröffentlichten interaktiven Tool: die Design- und Build-Story hinter dem Wheel of Readiness.',
+    'cta-btn': 'Case Study lesen &rarr;',
+    'footer-imprint': 'Impressum &amp; Datenschutz',
+    'footer-cookies': 'Cookie-Einstellungen',
+    'cookie-text': 'Diese Seite verwendet PostHog Analytics. <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" target="_blank">Datenschutz</a>',
+    'cookie-decline': 'Ablehnen',
+    'cookie-accept': 'Akzeptieren',
+  },
+};
+
+let currentLang = 'en';
+
+function t(key) {
+  const dict = I18N[currentLang] || I18N.en;
+  return dict[key] !== undefined ? dict[key] : (I18N.en[key] !== undefined ? I18N.en[key] : key);
+}
+
+// Liest ein Feld in der aktuellen Sprache, fällt auf Englisch zurück
+function L(obj, field) {
+  if (currentLang !== 'en' && obj[currentLang] && obj[currentLang][field] !== undefined) {
+    return obj[currentLang][field];
+  }
+  return obj[field];
+}
+
 const SEGMENTS = [
-  { id: 'photo',           emoji: '🖼️',  label: 'Profile Pic',  color: '#e05a20' },
-  { id: 'cover',           emoji: '🌅',  label: 'Cover Photo',  color: '#0a8a6a' },
-  { id: 'headline',        emoji: '✍️',  label: 'Headline',     color: '#c0308a' },
-  { id: 'about',           emoji: '📝',  label: 'About',        color: '#2060c0' },
-  { id: 'experience',      emoji: '💼',  label: 'Experience',   color: '#c07010' },
-  { id: 'education',       emoji: '🎓',  label: 'Education',    color: '#c03030' },
-  { id: 'skills',          emoji: '🛠️',  label: 'Skills',       color: '#6030c0' },
-  { id: 'certs',           emoji: '📜',  label: 'Certs',        color: '#0a7a70' },
-  { id: 'connections',     emoji: '🔗',  label: 'Networking',   color: '#4a8a00' },
-  { id: 'recommendations', emoji: '⭐',  label: 'Recs',         color: '#7040c0' },
-  { id: 'extras',          emoji: '✨',  label: 'Extras',       color: '#0a7a60' },
-  { id: 'secondlang',      emoji: '🌐',  label: 'Language',     color: '#1860a0' },
+  { id: 'photo',           emoji: '🖼️',  label: 'Profile Pic',  color: '#e05a20', de: { label: 'Profilbild' } },
+  { id: 'cover',           emoji: '🌅',  label: 'Cover Photo',  color: '#0a8a6a', de: { label: 'Titelbild' } },
+  { id: 'headline',        emoji: '✍️',  label: 'Headline',     color: '#c0308a', de: { label: 'Profil-Slogan' } },
+  { id: 'about',           emoji: '📝',  label: 'About',        color: '#2060c0', de: { label: 'Info' } },
+  { id: 'experience',      emoji: '💼',  label: 'Experience',   color: '#c07010', de: { label: 'Erfahrung' } },
+  { id: 'education',       emoji: '🎓',  label: 'Education',    color: '#c03030', de: { label: 'Ausbildung' } },
+  { id: 'skills',          emoji: '🛠️',  label: 'Skills',       color: '#6030c0', de: { label: 'Kenntnisse' } },
+  { id: 'certs',           emoji: '📜',  label: 'Certs',        color: '#0a7a70', de: { label: 'Zertifikate' } },
+  { id: 'connections',     emoji: '🔗',  label: 'Networking',   color: '#4a8a00', de: { label: 'Netzwerk' } },
+  { id: 'recommendations', emoji: '⭐',  label: 'Recs',         color: '#7040c0', de: { label: 'Empfehlungen' } },
+  { id: 'extras',          emoji: '✨',  label: 'Extras',       color: '#0a7a60', de: { label: 'Extras' } },
+  { id: 'secondlang',      emoji: '🌐',  label: 'Language',     color: '#1860a0', de: { label: 'Sprache' } },
 ];
 
 const PHASES = [
@@ -907,29 +1004,40 @@ const PHASES = [
     name: 'Profile Foundations',
     sections: [
       {
-        id: 'photo', emoji: '🖼️', title: 'Profile Picture', color: '#e05a20',
+        id: 'photo', emoji: '🖼️', title: 'Profile Picture', color: '#e05a20', de: { title: 'Profilbild' },
         items: [
-          { id: 'ph1', text: 'Use a professional, high-quality photo — looking straight at the camera', hint: 'Avoid cropped holiday or party photos.', tag: 'must' },
-          { id: 'ph2', text: 'Smile and present yourself as you would in a virtual job interview', hint: null, tag: 'must' },
-          { id: 'ph3', text: 'Choose a clean, non-distracting background', hint: null, tag: 'must' },
-          { id: 'ph4', text: 'If you are transitioning careers, check whether your photo still reflects who you are now', hint: null, tag: 'tip' },
+          { id: 'ph1', text: 'Use a professional, high-quality photo — looking straight at the camera', hint: 'Avoid cropped holiday or party photos.', tag: 'must',
+            de: { text: 'Verwende ein professionelles, hochwertiges Foto mit direktem Blick in die Kamera', hint: 'Vermeide zugeschnittene Urlaubs- oder Partyfotos.' } },
+          { id: 'ph2', text: 'Smile and present yourself as you would in a virtual job interview', hint: null, tag: 'must',
+            de: { text: 'Lächle und präsentiere dich so, wie du es in einem virtuellen Vorstellungsgespräch tun würdest' } },
+          { id: 'ph3', text: 'Choose a clean, non-distracting background', hint: null, tag: 'must',
+            de: { text: 'Wähle einen ruhigen, nicht ablenkenden Hintergrund' } },
+          { id: 'ph4', text: 'If you are transitioning careers, check whether your photo still reflects who you are now', hint: null, tag: 'tip',
+            de: { text: 'Wenn du dich beruflich neu orientierst, prüfe, ob dein Foto noch zu dem passt, wer du heute bist' } },
         ]
       },
       {
-        id: 'cover', emoji: '🌅', title: 'Cover Photo', color: '#0a8a6a',
+        id: 'cover', emoji: '🌅', title: 'Cover Photo', color: '#0a8a6a', de: { title: 'Titelbild' },
         items: [
-          { id: 'cv1', text: 'Replace the default LinkedIn banner with a custom cover photo', hint: 'Default banners signal an incomplete profile.', tag: 'must' },
-          { id: 'cv2', text: 'Choose an image that represents your field, personality, or brand', hint: 'Ideas: your workspace, your city, a design or data visual, a favourite quote.', tag: 'must' },
+          { id: 'cv1', text: 'Replace the default LinkedIn banner with a custom cover photo', hint: 'Default banners signal an incomplete profile.', tag: 'must',
+            de: { text: 'Ersetze das Standardbanner von LinkedIn durch ein eigenes Titelbild', hint: 'Standardbanner wirken wie ein unvollständiges Profil.' } },
+          { id: 'cv2', text: 'Choose an image that represents your field, personality, or brand', hint: 'Ideas: your workspace, your city, a design or data visual, a favourite quote.', tag: 'must',
+            de: { text: 'Wähle ein Bild, das dein Fachgebiet, deine Persönlichkeit oder deine Marke widerspiegelt', hint: 'Ideen: dein Arbeitsplatz, deine Stadt, ein Design- oder Datenvisual, ein Lieblingszitat.' } },
         ]
       },
       {
-        id: 'headline', emoji: '✍️', title: 'Headline', color: '#c0308a',
+        id: 'headline', emoji: '✍️', title: 'Headline', color: '#c0308a', de: { title: 'Profil-Slogan' },
         items: [
-          { id: 'hl1', text: 'Write a precise headline that clearly communicates your target role', hint: 'Formula: Job Title | Stack or Tools | Domain | Key Strength | (Remote-First if applicable)', tag: 'must' },
-          { id: 'hl2', text: 'Include 2–3 niche keywords a recruiter might search for', hint: null, tag: 'must' },
-          { id: 'hl3', text: 'Represent who you are NOW — not who you were before your transition', hint: null, tag: 'must' },
-          { id: 'hl4', text: 'Keep it under 220 characters', hint: null, tag: 'must' },
-          { id: 'hl5', text: 'Create a version in a second language if relevant to your market', hint: null, tag: 'nice' },
+          { id: 'hl1', text: 'Write a precise headline that clearly communicates your target role', hint: 'Formula: Job Title | Stack or Tools | Domain | Key Strength | (Remote-First if applicable)', tag: 'must',
+            de: { text: 'Formuliere einen präzisen Profil-Slogan, der deine Zielrolle klar kommuniziert', hint: 'Formel: Jobtitel | Stack oder Tools | Branche | Kernstärke | (Remote-First, falls zutreffend)' } },
+          { id: 'hl2', text: 'Include 2–3 niche keywords a recruiter might search for', hint: null, tag: 'must',
+            de: { text: 'Nutze 2 bis 3 spezifische Keywords, nach denen Recruiter suchen könnten' } },
+          { id: 'hl3', text: 'Represent who you are NOW — not who you were before your transition', hint: null, tag: 'must',
+            de: { text: 'Zeige, wer du JETZT bist, nicht wer du vor deinem Wechsel warst' } },
+          { id: 'hl4', text: 'Keep it under 220 characters', hint: null, tag: 'must',
+            de: { text: 'Bleib unter 220 Zeichen' } },
+          { id: 'hl5', text: 'Create a version in a second language if relevant to your market', hint: null, tag: 'nice',
+            de: { text: 'Erstelle eine Version in einer zweiten Sprache, wenn sie für deinen Markt relevant ist' } },
         ]
       },
     ]
@@ -938,16 +1046,24 @@ const PHASES = [
     name: 'About Section',
     sections: [
       {
-        id: 'about', emoji: '📝', title: 'About / Summary', color: '#2060c0',
+        id: 'about', emoji: '📝', title: 'About / Summary', color: '#2060c0', de: { title: 'Info / Zusammenfassung' },
         items: [
-          { id: 'ab1', text: 'State your desired role and finish with a credibility hook from your background', hint: 'e.g. "I\'m a UX Designer with a background in frontend development…"', tag: 'must' },
-          { id: 'ab2', text: 'Describe your relevant skills — both technical and transferable', hint: null, tag: 'must' },
-          { id: 'ab3', text: 'Express genuine excitement about your career direction or transition', hint: null, tag: 'must' },
-          { id: 'ab4', text: 'List your key tools and software so recruiters can form an instant impression', hint: null, tag: 'must' },
-          { id: 'ab5', text: 'End with a clear "open to" statement — role types, location, remote/hybrid', hint: null, tag: 'must' },
-          { id: 'ab6', text: 'Stay within the 2000-character limit', hint: null, tag: 'must' },
-          { id: 'ab7', text: 'Write a version in a second language for a secondary profile', hint: null, tag: 'nice' },
-          { id: 'ab8', text: 'Personalise AI-generated text — it should sound like you, not a template', hint: null, tag: 'tip' },
+          { id: 'ab1', text: 'State your desired role and finish with a credibility hook from your background', hint: 'e.g. "I\'m a UX Designer with a background in frontend development…"', tag: 'must',
+            de: { text: 'Nenne deine Wunschrolle und schließe mit einem glaubwürdigen Bezug zu deinem Hintergrund', hint: 'z. B. „Ich bin UX Designer mit Hintergrund in der Frontend-Entwicklung …“' } },
+          { id: 'ab2', text: 'Describe your relevant skills — both technical and transferable', hint: null, tag: 'must',
+            de: { text: 'Beschreibe deine relevanten Fähigkeiten, technische wie übertragbare' } },
+          { id: 'ab3', text: 'Express genuine excitement about your career direction or transition', hint: null, tag: 'must',
+            de: { text: 'Zeige echte Begeisterung für deine berufliche Richtung oder deinen Wechsel' } },
+          { id: 'ab4', text: 'List your key tools and software so recruiters can form an instant impression', hint: null, tag: 'must',
+            de: { text: 'Liste deine wichtigsten Tools und Programme auf, damit sich Recruiter sofort ein Bild machen können' } },
+          { id: 'ab5', text: 'End with a clear "open to" statement — role types, location, remote/hybrid', hint: null, tag: 'must',
+            de: { text: 'Schließe mit einem klaren „Offen für“-Satz: Rollen, Standort, Remote oder Hybrid' } },
+          { id: 'ab6', text: 'Stay within the 2000-character limit', hint: null, tag: 'must',
+            de: { text: 'Halte das Limit von 2.000 Zeichen ein' } },
+          { id: 'ab7', text: 'Write a version in a second language for a secondary profile', hint: null, tag: 'nice',
+            de: { text: 'Schreibe eine Version in einer zweiten Sprache für dein Zweitprofil' } },
+          { id: 'ab8', text: 'Personalise AI-generated text — it should sound like you, not a template', hint: null, tag: 'tip',
+            de: { text: 'Passe KI-generierte Texte an: Sie sollen nach dir klingen, nicht nach einer Vorlage' } },
         ]
       },
     ]
@@ -956,24 +1072,35 @@ const PHASES = [
     name: 'Experience & Education',
     sections: [
       {
-        id: 'experience', emoji: '💼', title: 'Experience', color: '#c07010',
+        id: 'experience', emoji: '💼', title: 'Experience', color: '#c07010', de: { title: 'Erfahrung' },
         items: [
-          { id: 'ex1', text: 'Add all relevant work experience with accurate dates and job titles', hint: null, tag: 'must' },
-          { id: 'ex2', text: 'Write bullet points using the CAR format: Context → Action → Result', hint: 'e.g. "Analysed onboarding data and built dashboards, reducing ramp-up time by 30%."', tag: 'must' },
-          { id: 'ex3', text: 'Add a current "Professional Development" entry if not currently employed', hint: 'List your bootcamp, courses, and active projects here so your profile reads as active.', tag: 'must' },
-          { id: 'ex4', text: 'Address any career gaps of 6–12+ months explicitly', hint: 'Use LinkedIn\'s dedicated Career Break feature. Keep the framing consistent with your CV.', tag: 'must' },
-          { id: 'ex5', text: 'Make sure gap explanations are worded consistently between your CV and LinkedIn', hint: 'Recruiters cross-check both.', tag: 'must' },
-          { id: 'ex6', text: 'Add media links — portfolio URLs, GitHub repos, or project pages — to relevant entries', hint: null, tag: 'nice' },
-          { id: 'ex7', text: 'Reverse-engineer 3 job listings and work their key phrases authentically into your experience bullets', hint: null, tag: 'tip' },
+          { id: 'ex1', text: 'Add all relevant work experience with accurate dates and job titles', hint: null, tag: 'must',
+            de: { text: 'Trage alle relevanten Berufserfahrungen mit korrekten Daten und Jobtiteln ein' } },
+          { id: 'ex2', text: 'Write bullet points using the CAR format: Context → Action → Result', hint: 'e.g. "Analysed onboarding data and built dashboards, reducing ramp-up time by 30%."', tag: 'must',
+            de: { text: 'Formuliere Stichpunkte im CAR-Format: Context → Action → Result', hint: 'z. B. „Onboarding-Daten analysiert und Dashboards gebaut, Einarbeitungszeit um 30 % reduziert.“' } },
+          { id: 'ex3', text: 'Add a current "Professional Development" entry if not currently employed', hint: 'List your bootcamp, courses, and active projects here so your profile reads as active.', tag: 'must',
+            de: { text: 'Lege einen aktuellen Eintrag „Berufliche Weiterbildung“ an, wenn du gerade nicht angestellt bist', hint: 'Liste hier Bootcamp, Kurse und laufende Projekte auf, damit dein Profil aktiv wirkt.' } },
+          { id: 'ex4', text: 'Address any career gaps of 6–12+ months explicitly', hint: 'Use LinkedIn\'s "Add career break" option (under "Add profile section" › "Core"). Keep the framing consistent with your CV.', tag: 'must',
+            de: { text: 'Erkläre Lücken im Lebenslauf von 6 bis 12 Monaten oder mehr ausdrücklich', hint: 'Nutze die LinkedIn-Funktion „Berufliche Auszeit hinzufügen“ (unter „Profilbereich hinzufügen“ › „Grundlagen“). Halte die Darstellung konsistent mit deinem Lebenslauf.' } },
+          { id: 'ex5', text: 'Make sure gap explanations are worded consistently between your CV and LinkedIn', hint: 'Recruiters cross-check both.', tag: 'must',
+            de: { text: 'Formuliere Erklärungen zu Lücken in Lebenslauf und LinkedIn einheitlich', hint: 'Recruiter gleichen beides ab.' } },
+          { id: 'ex6', text: 'Add media links — portfolio URLs, GitHub repos, or project pages — to relevant entries', hint: null, tag: 'nice',
+            de: { text: 'Füge passenden Einträgen Medienlinks hinzu: Portfolio-URLs, GitHub-Repos oder Projektseiten' } },
+          { id: 'ex7', text: 'Reverse-engineer 3 job listings and work their key phrases authentically into your experience bullets', hint: null, tag: 'tip',
+            de: { text: 'Analysiere 3 Stellenanzeigen und übernimm ihre Schlüsselbegriffe authentisch in deine Erfahrungs-Stichpunkte' } },
         ]
       },
       {
-        id: 'education', emoji: '🎓', title: 'Education', color: '#c03030',
+        id: 'education', emoji: '🎓', title: 'Education', color: '#c03030', de: { title: 'Ausbildung' },
         items: [
-          { id: 'ed1', text: 'Add all degrees with institution name, field of study, and graduation year', hint: null, tag: 'must' },
-          { id: 'ed2', text: 'Add your bootcamp to the Education section — this makes you visible in alumni searches', hint: null, tag: 'must' },
-          { id: 'ed3', text: 'Mention relevant thesis or data-related work if applicable', hint: null, tag: 'nice' },
-          { id: 'ed4', text: 'Upload or link your graduation certificate once received', hint: null, tag: 'nice' },
+          { id: 'ed1', text: 'Add all degrees with institution name, field of study, and graduation year', hint: null, tag: 'must',
+            de: { text: 'Trage alle Abschlüsse mit Hochschule, Studienfach und Abschlussjahr ein' } },
+          { id: 'ed2', text: 'Add your bootcamp to the Education section — this makes you visible in alumni searches', hint: null, tag: 'must',
+            de: { text: 'Füge dein Bootcamp im Bereich Ausbildung hinzu, so wirst du in Alumni-Suchen gefunden' } },
+          { id: 'ed3', text: 'Mention relevant thesis or data-related work if applicable', hint: null, tag: 'nice',
+            de: { text: 'Erwähne relevante Abschlussarbeiten oder datenbezogene Arbeiten, falls zutreffend' } },
+          { id: 'ed4', text: 'Upload or link your graduation certificate once received', hint: null, tag: 'nice',
+            de: { text: 'Lade dein Abschlusszertifikat hoch oder verlinke es, sobald du es hast' } },
         ]
       },
     ]
@@ -982,19 +1109,25 @@ const PHASES = [
     name: 'Skills & Credentials',
     sections: [
       {
-        id: 'skills', emoji: '🛠️', title: 'Skills & Endorsements', color: '#6030c0',
+        id: 'skills', emoji: '🛠️', title: 'Skills & Endorsements', color: '#6030c0', de: { title: 'Kenntnisse & Bestätigungen' },
         items: [
-          { id: 'sk1', text: 'Add 10–15 in-demand skills relevant to your target role', hint: 'You can list up to 50. Prioritise quality over quantity.', tag: 'must' },
-          { id: 'sk2', text: 'Pin your top 5 most relevant skills so they appear first', hint: null, tag: 'must' },
-          { id: 'sk3', text: 'Include both technical skills (tools, languages) and transferable skills (research, communication)', hint: null, tag: 'must' },
-          { id: 'sk4', text: 'Ask peers and cohort members to endorse your skills — and reciprocate', hint: 'Endorsed skills increase your keyword visibility in LinkedIn search.', tag: 'nice' },
+          { id: 'sk1', text: 'Add 10–15 in-demand skills relevant to your target role', hint: 'You can list up to 50. Prioritise quality over quantity.', tag: 'must',
+            de: { text: 'Füge 10 bis 15 gefragte Kenntnisse für deine Zielrolle hinzu', hint: 'Bis zu 50 sind möglich. Qualität geht vor Quantität.' } },
+          { id: 'sk2', text: 'Pin your top 5 most relevant skills so they appear first', hint: null, tag: 'must',
+            de: { text: 'Pinne deine 5 relevantesten Kenntnisse, damit sie zuerst erscheinen' } },
+          { id: 'sk3', text: 'Include both technical skills (tools, languages) and transferable skills (research, communication)', hint: null, tag: 'must',
+            de: { text: 'Kombiniere technische Kenntnisse (Tools, Sprachen) mit übertragbaren (Research, Kommunikation)' } },
+          { id: 'sk4', text: 'Ask peers and cohort members to endorse your skills — and reciprocate', hint: 'Endorsed skills increase your keyword visibility in LinkedIn search.', tag: 'nice',
+            de: { text: 'Bitte Kollegen und Kursteilnehmende, deine Kenntnisse zu bestätigen, und revanchiere dich', hint: 'Bestätigte Kenntnisse verbessern deine Sichtbarkeit in der LinkedIn-Suche.' } },
         ]
       },
       {
-        id: 'certs', emoji: '📜', title: 'Licenses, Certificates & Languages', color: '#0a7a70',
+        id: 'certs', emoji: '📜', title: 'Licenses, Certificates & Languages', color: '#0a7a70', de: { title: 'Lizenzen, Zertifikate & Sprachen' },
         items: [
-          { id: 'ce1', text: 'Add relevant completed courses and certifications with dates', hint: null, tag: 'must' },
-          { id: 'ce2', text: 'Add all languages you speak with proficiency levels', hint: null, tag: 'must' },
+          { id: 'ce1', text: 'Add relevant completed courses and certifications with dates', hint: null, tag: 'must',
+            de: { text: 'Trage relevante abgeschlossene Kurse und Zertifikate mit Datum ein' } },
+          { id: 'ce2', text: 'Add all languages you speak with proficiency levels', hint: null, tag: 'must',
+            de: { text: 'Gib alle Sprachen an, die du sprichst, jeweils mit Sprachniveau' } },
         ]
       },
     ]
@@ -1003,14 +1136,20 @@ const PHASES = [
     name: 'Networking & Visibility',
     sections: [
       {
-        id: 'connections', emoji: '🔗', title: 'Connections & Groups', color: '#4a8a00',
+        id: 'connections', emoji: '🔗', title: 'Connections & Groups', color: '#4a8a00', de: { title: 'Kontakte & Gruppen' },
         items: [
-          { id: 'cn1', text: 'Aim for 200+ connections — profiles below this threshold are less visible in search', hint: null, tag: 'must' },
-          { id: 'cn2', text: 'Join your bootcamp or alumni LinkedIn group', hint: 'Easy way to expand your relevant network immediately.', tag: 'must' },
-          { id: 'cn3', text: 'Join 1–2 professional groups aligned to your target role or field', hint: null, tag: 'must' },
-          { id: 'cn4', text: 'Connect with 3+ people per week from target companies or your field', hint: null, tag: 'ongoing' },
-          { id: 'cn5', text: 'Engage with relevant hashtags and communities in your field', hint: null, tag: 'ongoing' },
-          { id: 'cn6', text: 'Post once a week about your learning, projects, or professional insights', hint: null, tag: 'ongoing' },
+          { id: 'cn1', text: 'Aim for 200+ connections — profiles below this threshold are less visible in search', hint: null, tag: 'must',
+            de: { text: 'Strebe mehr als 200 Kontakte an; Profile unter dieser Schwelle sind in der Suche weniger sichtbar' } },
+          { id: 'cn2', text: 'Join your bootcamp or alumni LinkedIn group', hint: 'Easy way to expand your relevant network immediately.', tag: 'must',
+            de: { text: 'Tritt der LinkedIn-Gruppe deines Bootcamps oder deiner Alumni bei', hint: 'Ein einfacher Weg, dein relevantes Netzwerk sofort zu erweitern.' } },
+          { id: 'cn3', text: 'Join 1–2 professional groups aligned to your target role or field', hint: null, tag: 'must',
+            de: { text: 'Tritt 1 bis 2 Fachgruppen bei, die zu deiner Zielrolle oder Branche passen' } },
+          { id: 'cn4', text: 'Connect with 3+ people per week from target companies or your field', hint: null, tag: 'ongoing',
+            de: { text: 'Vernetze dich pro Woche mit mindestens 3 Personen aus Zielunternehmen oder deinem Fachgebiet' } },
+          { id: 'cn5', text: 'Engage with relevant hashtags and communities in your field', hint: null, tag: 'ongoing',
+            de: { text: 'Interagiere mit relevanten Hashtags und Communities in deinem Fachgebiet' } },
+          { id: 'cn6', text: 'Post once a week about your learning, projects, or professional insights', hint: null, tag: 'ongoing',
+            de: { text: 'Poste einmal pro Woche über dein Lernen, deine Projekte oder fachliche Erkenntnisse' } },
         ]
       },
     ]
@@ -1019,26 +1158,34 @@ const PHASES = [
     name: 'Nice-to-Haves',
     sections: [
       {
-        id: 'recommendations', emoji: '⭐', title: 'Recommendations', color: '#7040c0',
+        id: 'recommendations', emoji: '⭐', title: 'Recommendations', color: '#7040c0', de: { title: 'Empfehlungen' },
         items: [
-          { id: 're1', text: 'Identify 2–3 professionals you\'ve worked closely with to ask for recommendations', hint: 'A mix of peers, managers, and mentors adds credibility depth.', tag: 'nice' },
-          { id: 're2', text: 'Send a short, personalised request — brief them on what to highlight', hint: null, tag: 'nice' },
-          { id: 're3', text: 'Offer to write a recommendation in return', hint: null, tag: 'nice' },
+          { id: 're1', text: 'Identify 2–3 professionals you\'ve worked closely with to ask for recommendations', hint: 'A mix of peers, managers, and mentors adds credibility depth.', tag: 'nice',
+            de: { text: 'Wähle 2 bis 3 Personen aus, mit denen du eng zusammengearbeitet hast, und bitte sie um eine Empfehlung', hint: 'Eine Mischung aus Kollegen, Vorgesetzten und Mentoren erhöht die Glaubwürdigkeit.' } },
+          { id: 're2', text: 'Send a short, personalised request — brief them on what to highlight', hint: null, tag: 'nice',
+            de: { text: 'Schicke eine kurze, persönliche Anfrage und sag, was hervorgehoben werden soll' } },
+          { id: 're3', text: 'Offer to write a recommendation in return', hint: null, tag: 'nice',
+            de: { text: 'Biete an, im Gegenzug eine Empfehlung zu schreiben' } },
         ]
       },
       {
-        id: 'extras', emoji: '✨', title: 'Honors, Volunteering & Organizations', color: '#0a7a60',
+        id: 'extras', emoji: '✨', title: 'Honors, Volunteering & Organizations', color: '#0a7a60', de: { title: 'Auszeichnungen, Ehrenamt & Organisationen' },
         items: [
-          { id: 'ex1b', text: 'Add any publicly recognised honors or awards', hint: null, tag: 'nice' },
-          { id: 'vo1',  text: 'Add volunteering experience if relevant — shows commitment beyond work', hint: null, tag: 'nice' },
-          { id: 'or1',  text: 'Add professional memberships or organisations you belong to', hint: null, tag: 'nice' },
+          { id: 'ex1b', text: 'Add any publicly recognised honors or awards', hint: null, tag: 'nice',
+            de: { text: 'Trage öffentlich anerkannte Auszeichnungen oder Preise ein' } },
+          { id: 'vo1',  text: 'Add volunteering experience if relevant — shows commitment beyond work', hint: null, tag: 'nice',
+            de: { text: 'Trage ehrenamtliches Engagement ein, falls relevant; es zeigt Einsatz über den Job hinaus' } },
+          { id: 'or1',  text: 'Add professional memberships or organisations you belong to', hint: null, tag: 'nice',
+            de: { text: 'Trage berufliche Mitgliedschaften oder Organisationen ein, denen du angehörst' } },
         ]
       },
       {
-        id: 'secondlang', emoji: '🌐', title: 'Profile in Another Language', color: '#1860a0',
+        id: 'secondlang', emoji: '🌐', title: 'Profile in Another Language', color: '#1860a0', de: { title: 'Zweitprofil in einer anderen Sprache' },
         items: [
-          { id: 'sl1', text: 'Create a secondary LinkedIn profile in another language if relevant to your job market', hint: 'Go to your profile → top right corner → "Add profile in another language".', tag: 'nice' },
-          { id: 'sl2', text: 'Translate your headline and About section — keep the same positioning', hint: null, tag: 'nice' },
+          { id: 'sl1', text: 'Create a secondary LinkedIn profile in another language if relevant to your job market', hint: 'Go to your profile → top right corner → "Add profile in another language".', tag: 'nice',
+            de: { text: 'Erstelle ein Zweitprofil in einer anderen Sprache, wenn es für deinen Arbeitsmarkt relevant ist', hint: 'Öffne dein Profil und füge im Bereich „Profilsprache“ eine weitere Sprache hinzu.' } },
+          { id: 'sl2', text: 'Translate your headline and About section — keep the same positioning', hint: null, tag: 'nice',
+            de: { text: 'Übersetze Profil-Slogan und Info-Bereich und behalte dabei dieselbe Positionierung bei' } },
         ]
       },
     ]
@@ -1046,10 +1193,29 @@ const PHASES = [
 ];
 
 const TAG_CONFIG = {
-  must:    { label: '✦ Must-have',     cls: 'tag-must' },
-  nice:    { label: '◈ Nice-to-have',  cls: 'tag-nice' },
-  ongoing: { label: '↻ Ongoing habit', cls: 'tag-ongoing' },
-  tip:     { label: '💡 Pro tip',      cls: 'tag-tip' },
+  must:    { cls: 'tag-must' },
+  nice:    { cls: 'tag-nice' },
+  ongoing: { cls: 'tag-ongoing' },
+  tip:     { cls: 'tag-tip' },
+};
+
+function applyStaticI18n() {
+  document.documentElement.lang = currentLang;
+  document.title = t('doc-title');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+  document.querySelectorAll('[data-lang]').forEach(b => { b.classList.toggle('active', b.dataset.lang === currentLang); });
+}
+
+window.switchLang = function (lang) {
+  if (!I18N[lang] || lang === currentLang) return;
+  currentLang = lang;
+  try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+  applyStaticI18n();
+  buildSegScores();
+  buildChecklist();
+  updateProgress();
+  drawWheel();
 };
 
 const ALL_SECTIONS = PHASES.flatMap(p => p.sections);
@@ -1069,6 +1235,8 @@ function saveState() {
 
 function buildChecklist() {
   const container = document.getElementById('checklist');
+  const firstBuild = container.children.length === 0;
+  const openIds = new Set(Array.from(container.querySelectorAll('.section-card.open')).map(el => el.id.slice(4)));
   container.innerHTML = '';
   ALL_SECTIONS.forEach((sec, idx) => {
     const num = String(idx + 1).padStart(2, '0');
@@ -1083,20 +1251,20 @@ function buildChecklist() {
         <span class="sec-chevron">${CHEVRON_SVG}</span>
         <span class="sec-emoji">${sec.emoji}</span>
         <span class="sec-num">${num}.</span>
-        <span class="sec-title" style="color:${sec.color}">${sec.title}</span>
+        <span class="sec-title" style="color:${sec.color}">${L(sec, 'title')}</span>
         <span class="sec-count" id="cnt-${sec.id}">${done}/${total}</span>
         <div class="sec-minibar-wrap">
           <div class="sec-minibar-fill" id="bar-${sec.id}" style="background:${sec.color};width:${pct}%"></div>
         </div>
-        <span class="sec-done-badge">✓ Complete</span>
+        <span class="sec-done-badge">${t('complete')}</span>
       </div>
       <div class="section-body" id="body-${sec.id}">
         ${sec.items.map(it => buildItemHTML(it)).join('')}
-        <div class="sec-complete-stamp">✓ Section complete</div>
+        <div class="sec-complete-stamp">${t('section-complete')}</div>
       </div>
     `;
     if (done === total) secEl.classList.add('all-done');
-    if (idx === 0) secEl.classList.add('open');
+    if (firstBuild ? idx === 0 : openIds.has(sec.id)) secEl.classList.add('open');
     container.appendChild(secEl);
     secEl.querySelector('.section-header').addEventListener('click', () => {
       const opening = !secEl.classList.contains('open');
@@ -1115,15 +1283,17 @@ function buildChecklist() {
 function buildItemHTML(it) {
   const tag = TAG_CONFIG[it.tag];
   const isDone = state[it.id] ? ' done' : '';
+  const text = L(it, 'text');
+  const hint = L(it, 'hint');
   return `
     <div class="item${isDone}" id="item-${it.id}">
       <div class="item-checkbox"></div>
       <div class="item-content">
-        <div class="item-text">${it.text}</div>
-        ${it.hint ? `<div class="item-hint">${it.hint}</div>` : ''}
+        <div class="item-text">${text}</div>
+        ${hint ? `<div class="item-hint">${hint}</div>` : ''}
       </div>
       <div class="item-footer">
-        <span class="tag ${tag.cls}">${tag.label}</span>
+        <span class="tag ${tag.cls}">${t('tag-' + it.tag)}</span>
       </div>
     </div>
   `;
@@ -1165,7 +1335,7 @@ function updateProgress() {
     done += sec.items.filter(it => state[it.id]).length;
   });
   const pct = total ? Math.round(done / total * 100) : 0;
-  document.getElementById('prog-nums').textContent = `${done} / ${total} tasks`;
+  document.getElementById('prog-nums').textContent = `${done} / ${total} ${t('tasks')}`;
   document.getElementById('prog-pct').textContent = `${pct}%`;
   document.getElementById('prog-fill').style.width = pct + '%';
   checkMilestones(done, total);
@@ -1273,7 +1443,7 @@ function drawWheel() {
   ctx.fillText(avgStr, cx, cy - 4);
   ctx.fillStyle = '#8a8880';
   ctx.font = '9px sans-serif';
-  ctx.fillText('avg', cx, cy + 9);
+  ctx.fillText(t('avg'), cx, cy + 9);
   SEGMENTS.forEach((seg, i) => {
     const midAngle = startOffset + i * sliceAngle + sliceAngle / 2;
     const labelR = R + 16;
@@ -1297,7 +1467,7 @@ function buildSegScores() {
     row.className = 'seg-row';
     row.innerHTML = `
       <span class="seg-emoji">${seg.emoji}</span>
-      <span class="seg-label">${seg.label}</span>
+      <span class="seg-label">${L(seg, 'label')}</span>
       <div class="seg-bar-wrap">
         <div class="seg-bar-fill" id="segbar-${seg.id}" style="background:${seg.color};width:${score*10}%"></div>
       </div>
@@ -1308,7 +1478,7 @@ function buildSegScores() {
 }
 
 document.getElementById('reset-btn').addEventListener('click', () => {
-  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  if (!confirm(t('reset-confirm'))) return;
   state = {};
   saveState();
   firedMilestones.clear();
@@ -1352,7 +1522,16 @@ document.getElementById('wheel-main').addEventListener('click', (e) => {
   });
 });
 
+document.querySelectorAll('.lang-switch [data-lang]').forEach(btn => {
+  btn.addEventListener('click', () => window.switchLang(btn.dataset.lang));
+});
+
 loadState();
+try {
+  const savedLang = localStorage.getItem(LANG_KEY);
+  if (savedLang && I18N[savedLang]) currentLang = savedLang;
+} catch (e) {}
+applyStaticI18n();
 buildSegScores();
 buildChecklist();
 updateProgress();
