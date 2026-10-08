@@ -22,12 +22,12 @@
     });
   </script>
   <meta charset="UTF-8">
-  <link rel="icon" type="image/svg+xml" href="sw_favicon32.svg">
+  <link rel="icon" type="image/svg+xml" href="https://sebastian-weber.github.io/uxui-portfolio/sw_favicon32.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LinkedIn Profile Readiness Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
 :root {
   --bg: #f7f6f3;
@@ -606,6 +606,11 @@
     color: var(--muted);
   }
 
+  /* Platz der Scrollbar dauerhaft reservieren: verhindert den Layout-Sprung,
+     wenn beim Öffnen des Drawers das Scrollen gesperrt wird */
+  html { scrollbar-gutter: stable; scroll-behavior: smooth; }
+
+  /* ===== Navbar (identisch zu den übrigen Portfolio-Seiten: Montserrat) ===== */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
     background: rgba(250, 250, 250, 0.94);
@@ -615,50 +620,21 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 48px; height: 56px;
   }
-
-  .nav-tag-teal {
-    background: #E6F4F1; color: #4A9B8E;
-    padding: 4px 12px; border-radius: 20px;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    pointer-events: none;
-    font-family: 'Source Sans 3', sans-serif;
+  /* Body nutzt Source Sans und -webkit-font-smoothing: antialiased (macOS, macht Schrift dünner).
+     Navigation bewusst auf Montserrat und Standard-Rendering setzen, wie auf den anderen Seiten. */
+  nav, .subnav, .nav-drawer, .nav-drawer__close {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
   }
-
-  .nav-links-list {
-    display: flex; gap: 28px; list-style: none; align-items: center;
-  }
-
-  .nav-links-list a {
-    font-size: 13px; color: #7A7A7A;
-    text-decoration: none; font-weight: 500;
-    transition: color 0.15s;
-    font-family: 'Source Sans 3', sans-serif;
-  }
-
-  .nav-links-list a:hover { color: #1A1A1A; }
-
-  .nav-cta-teal {
-    background: #4A9B8E; color: #FFFFFF !important;
-    padding: 7px 16px; border-radius: 7px;
-    font-size: 13px !important; font-weight: 600 !important;
-    transition: background 0.15s;
-  }
-
-  .nav-cta-teal:hover { background: #3D8577 !important; }
-
-  /* ══ ERGÄNZT — fehlte komplett: Styling für die tatsächlich verwendete .nav-links Nav ══ */
-  .nav-links {
-    display: flex; gap: 28px; list-style: none; align-items: center;
-  }
-  .nav-links a, .nav-current {
-    font-size: 13px; color: #7A7A7A;
-    text-decoration: none; font-weight: 500;
-    transition: color 0.15s;
+  .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+  .nav-links a, .nav-links .nav-current {
+    font-size: 13px; color: #7A7A7A; text-decoration: none; font-weight: 500; transition: color 0.15s;
   }
   .nav-links a:hover { color: #1A1A1A; }
-  .nav-current { color: #1A1A1A; font-weight: 700; }
-  .nav-flex-item { display: inline-block; min-width: 76px; text-align: center; }
+  .nav-links .nav-current { color: #1A1A1A; font-weight: 700; cursor: default; }
+  .nav-links .nav-flex-item { display: inline-block; min-width: 76px; text-align: center; }
+
   .lang-switch { display: flex; align-items: center; gap: 6px; }
   .lang-switch button {
     font-family: inherit; background: none; border: none;
@@ -669,8 +645,151 @@
   .lang-switch button.active { color: #1A1A1A; font-weight: 700; }
   .lang-switch .sep { color: #E0DEDA; }
 
+  /* ===== Subnav: In-Page-Sprungpunkte (Tool = Teal) ===== */
+  .subnav {
+    position: fixed; top: 56px; left: 0; right: 0; z-index: 40;
+    background: rgba(250, 250, 250, 0.94); backdrop-filter: blur(12px);
+    border-bottom: 1px solid #E0DEDA;
+    display: flex; justify-content: flex-end; align-items: center; gap: 24px;
+    padding: 0 48px; height: 44px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .subnav::-webkit-scrollbar { display: none; }
+  .subnav a {
+    font-size: 12px; font-weight: 600; color: #7A7A7A; text-decoration: none;
+    white-space: nowrap; padding: 4px 2px; border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s; flex-shrink: 0;
+  }
+  .subnav a:hover { color: #1A1A1A; }
+  .subnav a.active { color: var(--teal); border-bottom-color: var(--teal); }
+  body { padding-top: 132px; }
+  .jump-target { scroll-margin-top: 116px; }
+
+  /* ===== Hero: identisch zu den Projektseiten (Montserrat, Eyebrow mit Linie, kursiver Sub) ===== */
+  .page-header { border-bottom: none; padding-bottom: 0; margin-bottom: 56px; padding-top: 48px; }
+  .page-header .hero-label {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: 11px; font-weight: 600; color: var(--teal);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+    -webkit-font-smoothing: auto; -moz-osx-font-smoothing: auto;
+  }
+  .page-header .hero-label::before { content: ''; display: block; width: 32px; height: 1.5px; background: var(--teal); }
+  .page-header h1 {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: clamp(28px, 4vw, 48px); font-weight: 700;
+    line-height: 1.15; letter-spacing: -0.01em; color: #0F1117;
+    margin-bottom: 16px;
+    -webkit-font-smoothing: auto; -moz-osx-font-smoothing: auto;
+  }
+  .page-header h1 em { color: inherit; font-style: normal; }
+  .page-header .subtitle {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: 17px; font-style: italic; color: #7A7A7A;
+    line-height: 1.65; max-width: 580px;
+    -webkit-font-smoothing: auto; -moz-osx-font-smoothing: auto;
+  }
+
+  /* ===== Mobile Navbar: Hamburger + Off-Canvas Drawer ===== */
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 8px;
+    margin: 0;
+    -webkit-appearance: none; appearance: none;
+    cursor: pointer;
+    color: #1A1A1A;
+  }
+  .nav-toggle svg { display: block; }
+
+  .nav-drawer {
+    position: fixed;
+    top: 0; right: 0;
+    height: 100%;
+    width: min(78vw, 320px);
+    background: #FAFAFA;
+    z-index: 200;
+    padding: 0 20px 20px;
+    transform: translateX(100%);
+    transition: transform 0.28s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -8px 0 24px rgba(0,0,0,0.08);
+    overflow-y: auto;
+    text-align: left;
+  }
+  .nav-drawer[data-open="true"] { transform: translateX(0); }
+
+  .nav-drawer__header {
+    height: 55px;          /* Platzhalter: hält den Abstand zu den Links */
+    margin-bottom: 25px;
+    flex-shrink: 0;
+  }
+  /* Close-Button liegt bewusst AUSSERHALB des Drawers: Der Drawer ist per transform
+     verschoben, ein Kind-Element hätte dadurch ein eigenes Koordinatensystem.
+     So teilen Hamburger und Close-Button dasselbe Bezugssystem (Viewport). */
+  .nav-drawer__close {
+    position: fixed; z-index: 210;
+    top: 7.5px; right: 20px; /* CSS-Fallback, falls JS nicht läuft */
+    background: none; border: none; padding: 8px; margin: 0;
+    cursor: pointer; color: #1A1A1A;
+    -webkit-appearance: none; appearance: none;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+  }
+  .nav-drawer__close[data-open="true"] {
+    opacity: 1; visibility: visible;
+    transition: opacity 0.28s ease, visibility 0s;
+  }
+  .nav-drawer__close svg { display: block; }
+
+  .nav-drawer__links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .nav-drawer__links li { border-bottom: 1px solid #E0DEDA; }
+  .nav-drawer__links a,
+  .nav-drawer__links .nav-current {
+    display: flex; align-items: center; padding: 16px 4px;
+    text-decoration: none; font-size: 18px; min-height: 44px;
+  }
+  .nav-drawer__links a { color: #7A7A7A; font-weight: 500; }
+  .nav-drawer__links .nav-current { color: #1A1A1A; font-weight: 700; }
+  .nav-drawer__section-label { display: flex; align-items: center; padding: 16px 4px; font-size: 18px; font-weight: 500; color: #1A1A1A; min-height: 44px; }
+  .nav-drawer__links a.subnav-drawer-item { padding-left: 22px; }
+  .nav-drawer__links a.subnav-drawer-item.active { color: var(--teal); font-weight: 700; }
+
+  .nav-drawer__lang { display: flex; gap: 6px; padding: 16px 4px; }
+  .nav-drawer__lang button {
+    font-family: inherit; background: none; border: none;
+    font-size: 16px; font-weight: 500; color: #7A7A7A; cursor: pointer; padding: 4px;
+  }
+  .nav-drawer__lang button.active { color: #1A1A1A; font-weight: 700; }
+  .nav-drawer__lang .sep { color: #E0DEDA; }
+
+  .nav-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 17, 23, 0.55);
+    z-index: 150;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.28s ease;
+  }
+  .nav-overlay[data-open="true"] { opacity: 1; pointer-events: auto; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .nav-drawer, .nav-overlay, .nav-drawer__close { transition: none; }
+  }
+
   @media (max-width: 860px) {
     nav { padding: 0 20px; }
+    .subnav { padding: 0 20px; }
+  }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: block; }
+    .subnav { display: none; }
+    body { padding-top: 72px; }
+    .jump-target { scroll-margin-top: 72px; }
   }
 
   @media (max-width: 560px) {
@@ -697,72 +816,6 @@
   .cookie-accept { background: #0A66C2; color: #fff; }
   .cookie-decline { background: transparent; color: #ccc; border: 1px solid #555 !important; }
   
-    /* ===== Mobile Navbar: Hamburger + Off-Canvas Drawer ===== */
-    .nav-toggle {
-      display: none;
-      background: none;
-      border: none;
-      padding: 8px;
-      cursor: pointer;
-      color: var(--text);
-    }
-    .nav-toggle svg { display: block; }
-
-    .nav-drawer {
-      position: fixed;
-      top: 0; right: 0;
-      height: 100%;
-      width: min(78vw, 320px);
-      background: var(--paper);
-      z-index: 200;
-      padding: 20px;
-      transform: translateX(100%);
-      transition: transform 0.28s ease;
-      display: flex;
-      flex-direction: column;
-      box-shadow: -8px 0 24px rgba(0,0,0,0.08);
-    }
-    .nav-drawer[data-open="true"] { transform: translateX(0); }
-
-    .nav-drawer__header { display: flex; justify-content: flex-end; margin-bottom: 24px; }
-    .nav-drawer__close { background: none; border: none; padding: 8px; cursor: pointer; color: var(--text); }
-
-    .nav-drawer__links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
-    .nav-drawer__links li { border-bottom: 1px solid var(--border); }
-    .nav-drawer__links a,
-    .nav-drawer__links .nav-current {
-      display: flex; align-items: center; padding: 16px 4px;
-      text-decoration: none; font-size: 18px; min-height: 44px;
-    }
-    .nav-drawer__links a { color: var(--muted); font-weight: 500; }
-    .nav-drawer__links .nav-current { color: var(--text); font-weight: 700; }
-
-    .nav-drawer__lang { display: flex; gap: 6px; padding: 16px 4px; }
-    .nav-drawer__lang button {
-      font-family: inherit; background: none; border: none;
-      font-size: 16px; font-weight: 500; color: var(--muted); cursor: pointer; padding: 4px;
-    }
-    .nav-drawer__lang button.active { color: var(--text); font-weight: 700; }
-    .nav-drawer__lang .sep { color: var(--border); }
-
-    .nav-overlay {
-      position: fixed; inset: 0;
-      background: rgba(15, 17, 23, 0.55);
-      z-index: 150;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.28s ease;
-    }
-    .nav-overlay[data-open="true"] { opacity: 1; pointer-events: auto; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .nav-drawer, .nav-overlay { transition: none; }
-    }
-
-    @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .nav-toggle { display: block; }
-    }
-
   </style>
 </head>
 <body>
@@ -793,14 +846,18 @@
     </button>
   </nav>
 
+  <div class="subnav" id="subnav" role="navigation" aria-label="Sections on this page" data-i18n-aria="sub-aria">
+    <a href="#progress" data-i18n="sub-progress">Progress</a>
+    <a href="#wheel" data-i18n="sub-wheel">Wheel</a>
+    <a href="#howto" data-i18n="sub-howto">How to</a>
+    <a href="#checklist" data-i18n="sub-checklist">Checklist</a>
+    <a href="#case-study" data-i18n="sub-case">Case Study</a>
+  </div>
+
   <div class="nav-overlay" id="navOverlay" data-open="false"></div>
 
   <aside class="nav-drawer" id="navDrawer" data-open="false" aria-hidden="true">
-    <div class="nav-drawer__header">
-      <button class="nav-drawer__close" id="navDrawerClose" aria-label="Close menu" data-i18n-aria="menu-close">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-    </div>
+    <div class="nav-drawer__header"></div>
     <ul class="nav-drawer__links">
       <li><span class="nav-current" data-i18n="nav-portfolio" aria-current="page">Portfolio</span></li>
       <li><a href="https://sebastian-weber.github.io/uxui-portfolio/about.html" data-i18n="nav-about">About</a></li>
@@ -812,19 +869,29 @@
           <button type="button" data-lang="en" class="active">EN</button>
         </div>
       </li>
-      <li><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank">LinkedIn</a></li>
+      <li><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank" rel="noopener">LinkedIn</a></li>
+      <li class="nav-drawer__section-label" data-i18n="sub-label">On this page</li>
+      <li><a href="#progress" class="subnav-drawer-item" data-i18n="sub-progress">Progress</a></li>
+      <li><a href="#wheel" class="subnav-drawer-item" data-i18n="sub-wheel">Wheel</a></li>
+      <li><a href="#howto" class="subnav-drawer-item" data-i18n="sub-howto">How to</a></li>
+      <li><a href="#checklist" class="subnav-drawer-item" data-i18n="sub-checklist">Checklist</a></li>
+      <li><a href="#case-study" class="subnav-drawer-item" data-i18n="sub-case">Case Study</a></li>
     </ul>
   </aside>
+  <button class="nav-drawer__close" data-open="false" id="navDrawerClose" aria-label="Close menu" data-i18n-aria="menu-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
 
 
 <div class="wrap">
 
   <header class="page-header">
-    <h1 data-i18n="h1">LinkedIn Profile <em>Readiness</em> Guide</h1>
+    <div class="hero-label" data-i18n="hero-label">Interactive Tool</div>
+    <h1 data-i18n="h1">LinkedIn Profile Readiness Guide</h1>
     <p class="subtitle" data-i18n="subtitle">A structured, step-by-step checklist covering every section of a strong LinkedIn profile — from must-haves to nice-to-haves. Work through each section in order and track your progress as you go.</p>
   </header>
 
-  <div class="progress-card">
+  <div class="progress-card jump-target" id="progress">
     <button class="reset-btn" id="reset-btn" data-i18n="reset">↺ Reset</button>
     <span class="prog-label" data-i18n="prog-label">Overall completion</span>
     <div class="prog-row">
@@ -836,7 +903,7 @@
     </div>
   </div>
 
-  <div class="wheel-card">
+  <div class="wheel-card jump-target" id="wheel">
     <div class="wheel-card-header">
       <h2>Wheel of <em>Readiness</em></h2>
       <span class="wheel-subtitle" data-i18n="wheel-sub">Updates live as you check off items</span>
@@ -859,7 +926,7 @@
     <span class="tag tag-tip" data-i18n="tag-tip">💡 Pro tip</span>
   </div>
 
-  <div class="wheel-card">
+  <div class="wheel-card jump-target" id="howto">
     <div class="wheel-card-header">
       <h2 data-i18n="howto-h2">How to <em>get going</em></h2>
     </div>
@@ -872,9 +939,9 @@
     </ol>
   </div>
 
-  <div id="checklist"></div>
+  <div id="checklist" class="jump-target"></div>
 
-  <div class="end-cta">
+  <div class="end-cta jump-target" id="case-study">
     <h2 class="end-cta-heading" data-i18n="cta-h">See how this tool was <em>built.</em></h2>
     <p class="end-cta-sub" data-i18n="cta-sub">From a real job-search problem to a deployed interactive tool — read the design and build story behind the Wheel of Readiness.</p>
     <a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html" class="end-cta-btn" data-i18n="cta-btn">Read case study &rarr;</a>
@@ -898,7 +965,15 @@ const I18N = {
     'nav-imprint': 'Imprint',
     'menu-open': 'Open menu',
     'menu-close': 'Close menu',
-    'h1': 'LinkedIn Profile <em>Readiness</em> Guide',
+    'h1': 'LinkedIn Profile Readiness Guide',
+    'hero-label': 'Interactive Tool',
+    'sub-aria': 'Sections on this page',
+    'sub-label': 'On this page',
+    'sub-progress': 'Progress',
+    'sub-wheel': 'Wheel',
+    'sub-howto': 'How to',
+    'sub-checklist': 'Checklist',
+    'sub-case': 'Case Study',
     'subtitle': 'A structured, step-by-step checklist covering every section of a strong LinkedIn profile — from must-haves to nice-to-haves. Work through each section in order and track your progress as you go.',
     'reset': '↺ Reset',
     'reset-confirm': 'Reset all progress? This cannot be undone.',
@@ -936,7 +1011,15 @@ const I18N = {
     'nav-imprint': 'Impressum',
     'menu-open': 'Menü öffnen',
     'menu-close': 'Menü schließen',
-    'h1': 'LinkedIn-Profil <em>Readiness</em> Guide',
+    'h1': 'LinkedIn-Profil Readiness Guide',
+    'hero-label': 'Interaktives Tool',
+    'sub-aria': 'Abschnitte auf dieser Seite',
+    'sub-label': 'Auf dieser Seite',
+    'sub-progress': 'Fortschritt',
+    'sub-wheel': 'Wheel',
+    'sub-howto': 'Anleitung',
+    'sub-checklist': 'Checkliste',
+    'sub-case': 'Case Study',
     'subtitle': 'Eine strukturierte Schritt-für-Schritt-Checkliste für jeden Bereich eines starken LinkedIn-Profils, von den Must-haves bis zu den Nice-to-haves. Arbeite die Bereiche der Reihe nach durch und verfolge dabei deinen Fortschritt.',
     'reset': '↺ Zurücksetzen',
     'reset-confirm': 'Gesamten Fortschritt zurücksetzen? Das kann nicht rückgängig gemacht werden.',
@@ -1557,6 +1640,7 @@ drawWheel();
   });
 </script>
   <script>
+  /* ===== Mobile Drawer ===== */
   (function () {
     var toggle = document.getElementById('navToggle');
     var closeBtn = document.getElementById('navDrawerClose');
@@ -1564,13 +1648,25 @@ drawWheel();
     var overlay = document.getElementById('navOverlay');
     var lastFocused = null;
 
+    /* Close-Button liegt im selben Bezugssystem (Viewport) wie der Hamburger:
+       Koordinaten werden 1:1 übernommen, ohne Umrechnung. */
+    function alignCloseToToggle() {
+      var t = toggle.getBoundingClientRect();
+      closeBtn.style.left  = t.left + 'px';
+      closeBtn.style.top   = t.top + 'px';
+      closeBtn.style.right = 'auto';
+    }
+
     function openDrawer() {
       lastFocused = document.activeElement;
+      document.body.style.overflow = 'hidden';
+      drawer.scrollTop = 0;
+      alignCloseToToggle();
       drawer.setAttribute('data-open', 'true');
       drawer.setAttribute('aria-hidden', 'false');
+      closeBtn.setAttribute('data-open', 'true');
       overlay.setAttribute('data-open', 'true');
       toggle.setAttribute('aria-expanded', 'true');
-      document.body.style.overflow = 'hidden';
       closeBtn.focus();
       document.addEventListener('keydown', onKeydown);
     }
@@ -1578,6 +1674,7 @@ drawWheel();
     function closeDrawer() {
       drawer.setAttribute('data-open', 'false');
       drawer.setAttribute('aria-hidden', 'true');
+      closeBtn.setAttribute('data-open', 'false');
       overlay.setAttribute('data-open', 'false');
       toggle.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
@@ -1588,7 +1685,7 @@ drawWheel();
     function onKeydown(e) {
       if (e.key === 'Escape') closeDrawer();
       if (e.key === 'Tab') {
-        var focusables = drawer.querySelectorAll('a, button');
+        var focusables = [closeBtn].concat(Array.prototype.slice.call(drawer.querySelectorAll('a, button')));
         var first = focusables[0];
         var last = focusables[focusables.length - 1];
         if (e.shiftKey && document.activeElement === first) {
@@ -1600,22 +1697,45 @@ drawWheel();
     }
 
     toggle.addEventListener('click', openDrawer);
+    window.addEventListener('resize', function () {
+      if (drawer.getAttribute('data-open') === 'true') alignCloseToToggle();
+    });
     closeBtn.addEventListener('click', closeDrawer);
     overlay.addEventListener('click', closeDrawer);
 
-    /* Sprach-Buttons im Drawer an die bestehende switchLang() koppeln */
-    var drawerLangButtons = document.querySelectorAll('.nav-drawer__lang [data-lang]');
-    drawerLangButtons.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var lang = btn.getAttribute('data-lang');
-        if (typeof window.switchLang === 'function') {
-          window.switchLang(lang);
-        }
-        document.querySelectorAll('[data-lang]').forEach(function (b) {
-          b.classList.toggle('active', b.getAttribute('data-lang') === lang);
-        });
+    /* Tap auf einen Sprungpunkt schließt den Drawer */
+    document.querySelectorAll('.subnav-drawer-item').forEach(function (a) {
+      a.addEventListener('click', function () {
+        lastFocused = null;
+        closeDrawer();
       });
     });
+
+    /* Sprach-Buttons im Drawer an die bestehende switchLang() koppeln */
+    document.querySelectorAll('.nav-drawer__lang [data-lang]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (typeof window.switchLang === 'function') window.switchLang(btn.getAttribute('data-lang'));
+      });
+    });
+  })();
+
+  /* ===== Subnav: aktiven Abschnitt markieren ===== */
+  (function () {
+    var ids = ['progress', 'wheel', 'howto', 'checklist', 'case-study'];
+    var sections = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+    var links = document.querySelectorAll('.subnav a, .subnav-drawer-item');
+    function update() {
+      var offset = window.innerWidth <= 640 ? 80 : 124;
+      var current = null;
+      sections.forEach(function (sec) { if (sec.getBoundingClientRect().top - offset <= 0) current = sec.id; });
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) current = ids[ids.length - 1];
+      links.forEach(function (a) {
+        a.classList.toggle('active', current !== null && a.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
   })();
   </script>
 
