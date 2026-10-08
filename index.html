@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" type="image/svg+xml" href="sw_favicon32.svg">
+  <link rel="icon" type="image/svg+xml" href="https://sebastian-weber.github.io/uxui-portfolio/sw_favicon32.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LinkedIn Profile Readiness Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;1,400&family=Source+Sans+3:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
   :root {
     --bg: #f7f6f3;
@@ -584,6 +584,11 @@
     color: var(--muted);
   }
 
+  /* Platz der Scrollbar dauerhaft reservieren: verhindert den Layout-Sprung,
+     wenn beim Öffnen des Drawers das Scrollen gesperrt wird */
+  html { scrollbar-gutter: stable; scroll-behavior: smooth; }
+
+  /* ===== Navbar (identisch zu den übrigen Portfolio-Seiten) ===== */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
     background: rgba(250, 250, 250, 0.94);
@@ -592,42 +597,156 @@
     z-index: 50;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 48px; height: 56px;
+    font-family: 'Montserrat', system-ui, sans-serif;
   }
+  .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+  .nav-links a { font-size: 13px; color: #7A7A7A; text-decoration: none; font-weight: 500; transition: color 0.15s; }
+  .nav-links a:hover { color: #1A1A1A; }
+  .nav-links a.nav-current { color: #1A1A1A; font-weight: 700; }
+  .nav-links .nav-flex-item { display: inline-block; min-width: 76px; text-align: center; }
 
-  .nav-tag-teal {
-    background: #E6F4F1; color: #4A9B8E;
-    padding: 4px 12px; border-radius: 20px;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    pointer-events: none;
-    font-family: 'Source Sans 3', sans-serif;
+  .lang-switch { display: flex; align-items: center; gap: 6px; }
+  .lang-switch button {
+    font-family: inherit; background: none; border: none;
+    font-size: 13px; font-weight: 500; color: #7A7A7A; cursor: pointer; padding: 2px;
   }
+  .lang-switch button.active { color: #1A1A1A; font-weight: 700; }
+  .lang-switch .sep { color: #E0DEDA; }
 
-  .nav-links-list {
-    display: flex; gap: 28px; list-style: none; align-items: center;
+  /* ===== Subnav: In-Page-Sprungpunkte (Tool = Teal) ===== */
+  .subnav {
+    position: fixed; top: 56px; left: 0; right: 0; z-index: 40;
+    background: rgba(250, 250, 250, 0.94); backdrop-filter: blur(12px);
+    border-bottom: 1px solid #E0DEDA;
+    display: flex; justify-content: flex-end; align-items: center; gap: 24px;
+    padding: 0 48px; height: 44px;
+    overflow-x: auto; scrollbar-width: none;
+    font-family: 'Montserrat', system-ui, sans-serif;
   }
-
-  .nav-links-list a {
-    font-size: 13px; color: #7A7A7A;
-    text-decoration: none; font-weight: 500;
-    transition: color 0.15s;
-    font-family: 'Source Sans 3', sans-serif;
+  .subnav::-webkit-scrollbar { display: none; }
+  .subnav a {
+    font-size: 12px; font-weight: 600; color: #7A7A7A; text-decoration: none;
+    white-space: nowrap; padding: 4px 2px; border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s; flex-shrink: 0;
   }
+  .subnav a:hover { color: #1A1A1A; }
+  .subnav a.active { color: var(--teal); border-bottom-color: var(--teal); }
+  body { padding-top: 132px; }
+  .jump-target { scroll-margin-top: 116px; }
 
-  .nav-links-list a:hover { color: #1A1A1A; }
-
-  .nav-cta-teal {
-    background: #4A9B8E; color: #FFFFFF !important;
-    padding: 7px 16px; border-radius: 7px;
-    font-size: 13px !important; font-weight: 600 !important;
-    transition: background 0.15s;
+  /* ===== Mobile Navbar: Hamburger + Off-Canvas Drawer ===== */
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 8px;
+    margin: 0;
+    -webkit-appearance: none; appearance: none;
+    cursor: pointer;
+    color: #1A1A1A;
   }
+  .nav-toggle svg { display: block; }
 
-  .nav-cta-teal:hover { background: #3D8577 !important; }
+  .nav-drawer {
+    position: fixed;
+    top: 0; right: 0;
+    height: 100%;
+    width: min(78vw, 320px);
+    background: #FAFAFA;
+    z-index: 200;
+    padding: 0 20px 20px;
+    transform: translateX(100%);
+    transition: transform 0.28s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -8px 0 24px rgba(0,0,0,0.08);
+    overflow-y: auto;
+    font-family: 'Montserrat', system-ui, sans-serif;
+  }
+  .nav-drawer[data-open="true"] { transform: translateX(0); }
+
+  .nav-drawer__header {
+    height: 55px;          /* Platzhalter: hält den Abstand zu den Links */
+    margin-bottom: 25px;
+    flex-shrink: 0;
+  }
+  .nav-drawer__close {
+    position: absolute;    /* Position wird per JS exakt auf den Hamburger gesetzt */
+    top: 7.5px; right: 20px; /* CSS-Fallback, falls JS nicht läuft */
+    background: none; border: none; padding: 8px; margin: 0;
+    cursor: pointer; color: #1A1A1A;
+    -webkit-appearance: none; appearance: none;
+  }
+  .nav-drawer__close svg { display: block; }
+
+  .nav-drawer__links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .nav-drawer__links li { border-bottom: 1px solid #E0DEDA; }
+  .nav-drawer__links a,
+  .nav-drawer__links .nav-current {
+    display: flex; align-items: center; padding: 16px 4px;
+    text-decoration: none; font-size: 18px; min-height: 44px;
+  }
+  .nav-drawer__links a { color: #7A7A7A; font-weight: 500; }
+  .nav-drawer__links .nav-current { color: #1A1A1A; font-weight: 700; }
+  .nav-drawer__section-label { display: flex; align-items: center; padding: 16px 4px; font-size: 18px; font-weight: 500; color: #1A1A1A; min-height: 44px; }
+  .nav-drawer__links a.subnav-drawer-item { padding-left: 22px; }
+  .nav-drawer__links a.subnav-drawer-item.active { color: var(--teal); font-weight: 700; }
+
+  .nav-drawer__lang { display: flex; gap: 6px; padding: 16px 4px; }
+  .nav-drawer__lang button {
+    font-family: inherit; background: none; border: none;
+    font-size: 16px; font-weight: 500; color: #7A7A7A; cursor: pointer; padding: 4px;
+  }
+  .nav-drawer__lang button.active { color: #1A1A1A; font-weight: 700; }
+  .nav-drawer__lang .sep { color: #E0DEDA; }
+
+  .nav-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 17, 23, 0.55);
+    z-index: 150;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.28s ease;
+  }
+  .nav-overlay[data-open="true"] { opacity: 1; pointer-events: auto; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .nav-drawer, .nav-overlay { transition: none; }
+  }
 
   @media (max-width: 860px) {
     nav { padding: 0 20px; }
-    .nav-links-list { display: none; }
+    .subnav { padding: 0 20px; }
+  }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: block; }
+    .subnav { display: none; }
+    body { padding-top: 72px; }
+    .jump-target { scroll-margin-top: 72px; }
+  }
+
+
+  /* ===== Hero: identisch zu den Projektseiten (Montserrat, Eyebrow mit Linie, kursiver Sub) ===== */
+  .page-header { border-bottom: none; padding-bottom: 0; margin-bottom: 56px; padding-top: 48px; }
+  .page-header .hero-label {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: 11px; font-weight: 600; color: var(--teal);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+  }
+  .page-header .hero-label::before { content: ''; display: block; width: 32px; height: 1.5px; background: var(--teal); }
+  .page-header h1 {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: clamp(28px, 4vw, 48px); font-weight: 700;
+    line-height: 1.15; letter-spacing: -0.01em; color: #0F1117;
+    margin-bottom: 16px;
+  }
+  .page-header .subtitle {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: 17px; font-style: italic; color: #7A7A7A;
+    line-height: 1.65; max-width: 580px;
   }
 
   @media (max-width: 560px) {
@@ -642,24 +761,73 @@
 <body>
 
 <nav>
-  <a href="https://sebastian-weber.github.io/uxui-portfolio/" class="nav-logo" style="display:flex;align-items:center;line-height:0;margin-right:8px;text-decoration:none;"><svg width="40" height="40" style="display:block;margin-top:-2px;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 19.0413V20.7092L15.9986 26.8336V25.3991L11.7131 23.7928V23.7848L10.3368 23.2366L1.51283 19.9819L10.3384 16.7504V16.7576L11.7146 16.2587L16.0001 14.6524V13.1113L0 19.0413Z" fill="#0F1117"/><path d="M16.0001 24.0696V22.4023L0 16.2773V17.7113L4.2859 19.317V19.3279L5.66227 19.8759L14.4871 23.1294L5.66227 26.3619V26.3546L4.2859 26.8534L0 28.4591V29.9996L16.0001 24.0696Z" fill="#0F1117"/><path d="M20.3237 26.8333H22.1382L28.8006 11H27.2401L25.4927 15.242H25.4809L24.8844 16.6032L21.3438 25.3361L17.826 16.6032H17.8339L17.2911 15.242L15.5436 11H13.8672L20.3237 26.8333Z" fill="#0F1117"/><path d="M23.5229 26.8333H25.3374L31.9998 11H30.4394L28.6919 15.2418H28.6801L28.0837 16.603L24.543 25.3354L21.0252 16.603H21.0331L20.4903 15.2418L18.7429 11H17.0664L23.5229 26.8333Z" fill="#0F1117"/></svg></a>
-  <ul class="nav-links-list">
-    <li><span class="nav-tag-teal">TOOL</span></li>
-    <li><a href="https://sebastian-weber.github.io/uxui-portfolio/">Portfolio</a></li>
-    <li><a href="https://linkedin.com/in/sebastian-weber1708" class="nav-cta-teal">LinkedIn &rarr;</a></li>
+  <a href="https://sebastian-weber.github.io/uxui-portfolio/index.html" class="logo" aria-label="Sebastian Weber - Home" style="display:flex;align-items:center;line-height:0;margin-right:8px;text-decoration:none;"><svg aria-hidden="true" focusable="false" width="40" height="40" style="display:block;margin-top:-2px;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 19.0413V20.7092L15.9986 26.8336V25.3991L11.7131 23.7928V23.7848L10.3368 23.2366L1.51283 19.9819L10.3384 16.7504V16.7576L11.7146 16.2587L16.0001 14.6524V13.1113L0 19.0413Z" fill="#0F1117"/><path d="M16.0001 24.0696V22.4023L0 16.2773V17.7113L4.2859 19.317V19.3279L5.66227 19.8759L14.4871 23.1294L5.66227 26.3619V26.3546L4.2859 26.8534L0 28.4591V29.9996L16.0001 24.0696Z" fill="#0F1117"/><path d="M20.3237 26.8333H22.1382L28.8006 11H27.2401L25.4927 15.242H25.4809L24.8844 16.6032L21.3438 25.3361L17.826 16.6032H17.8339L17.2911 15.242L15.5436 11H13.8672L20.3237 26.8333Z" fill="#0F1117"/><path d="M23.5229 26.8333H25.3374L31.9998 11H30.4394L28.6919 15.2418H28.6801L28.0837 16.603L24.543 25.3354L21.0252 16.603H21.0331L20.4903 15.2418L18.7429 11H17.0664L23.5229 26.8333Z" fill="#0F1117"/></svg></a>
+  <ul class="nav-links">
+    <li><a href="https://sebastian-weber.github.io/uxui-portfolio/index.html" class="nav-current" data-i18n="nav-portfolio">Portfolio</a></li>
+    <li><a href="https://sebastian-weber.github.io/uxui-portfolio/about.html" class="nav-flex-item" data-i18n="nav-about">About</a></li>
+    <li><a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" class="nav-flex-item" data-i18n="nav-imprint">Imprint</a></li>
+    <li>
+      <span class="lang-switch">
+        <button type="button" data-lang="de">DE</button>
+        <span class="sep">|</span>
+        <button type="button" data-lang="en">EN</button>
+      </span>
+    </li>
+    <li><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank" rel="noopener">LinkedIn</a></li>
   </ul>
+  <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navDrawer" aria-label="Open menu" data-i18n-aria="nav-open">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
 </nav>
+
+<div class="subnav" id="subnav" role="navigation" aria-label="Sections on this page" data-i18n-aria="sub-aria">
+  <a href="#progress" data-i18n="sub-progress">Progress</a>
+  <a href="#wheel" data-i18n="sub-wheel">Wheel</a>
+  <a href="#howto" data-i18n="sub-howto">How to</a>
+  <a href="#checklist" data-i18n="sub-checklist">Checklist</a>
+  <a href="#case-study" data-i18n="sub-case">Case Study</a>
+</div>
+
+<div class="nav-overlay" id="navOverlay" data-open="false"></div>
+
+<aside class="nav-drawer" id="navDrawer" data-open="false" aria-hidden="true">
+  <div class="nav-drawer__header">
+    <button class="nav-drawer__close" id="navDrawerClose" aria-label="Close menu" data-i18n-aria="nav-close">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <ul class="nav-drawer__links">
+    <li><a href="https://sebastian-weber.github.io/uxui-portfolio/index.html" class="nav-current" data-i18n="nav-portfolio">Portfolio</a></li>
+    <li><a href="https://sebastian-weber.github.io/uxui-portfolio/about.html" data-i18n="nav-about">About</a></li>
+    <li><a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" data-i18n="nav-imprint">Imprint</a></li>
+    <li>
+      <div class="nav-drawer__lang">
+        <button type="button" data-lang="de">DE</button>
+        <span class="sep">|</span>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+    </li>
+    <li><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank" rel="noopener">LinkedIn</a></li>
+    <li class="nav-drawer__section-label" data-i18n="sub-label">On this page</li>
+    <li><a href="#progress" class="subnav-drawer-item" data-i18n="sub-progress">Progress</a></li>
+    <li><a href="#wheel" class="subnav-drawer-item" data-i18n="sub-wheel">Wheel</a></li>
+    <li><a href="#howto" class="subnav-drawer-item" data-i18n="sub-howto">How to</a></li>
+    <li><a href="#checklist" class="subnav-drawer-item" data-i18n="sub-checklist">Checklist</a></li>
+    <li><a href="#case-study" class="subnav-drawer-item" data-i18n="sub-case">Case Study</a></li>
+  </ul>
+</aside>
 
 <div class="wrap">
 
   <header class="page-header">
-    <h1>LinkedIn Profile <em>Readiness</em> Guide</h1>
-    <p class="subtitle">A structured, step-by-step checklist covering every section of a strong LinkedIn profile — from must-haves to nice-to-haves. Work through each section in order and track your progress as you go.</p>
+    <div class="hero-label" data-i18n="hero-label">Interactive Tool</div>
+    <h1>LinkedIn Profile Readiness Guide</h1>
+    <p class="subtitle" data-i18n="subtitle">A structured, step-by-step checklist covering every section of a strong LinkedIn profile — from must-haves to nice-to-haves. Work through each section in order and track your progress as you go.</p>
   </header>
 
-  <div class="progress-card">
-    <button class="reset-btn" id="reset-btn">↺ Reset</button>
-    <span class="prog-label">Overall completion</span>
+  <div class="progress-card jump-target" id="progress">
+    <button class="reset-btn" id="reset-btn" data-i18n="reset">↺ Reset</button>
+    <span class="prog-label" data-i18n="prog-label">Overall completion</span>
     <div class="prog-row">
       <div class="prog-nums" id="prog-nums">0 / 0 tasks</div>
       <div class="prog-pct" id="prog-pct">0%</div>
@@ -669,10 +837,10 @@
     </div>
   </div>
 
-  <div class="wheel-card">
+  <div class="wheel-card jump-target" id="wheel">
     <div class="wheel-card-header">
       <h2>Wheel of <em>Readiness</em></h2>
-      <span class="wheel-subtitle">Updates live as you check off items</span>
+      <span class="wheel-subtitle" data-i18n="wheel-sub">Updates live as you check off items</span>
     </div>
     <div class="wheel-body">
       <div class="wheel-left">
@@ -681,43 +849,205 @@
       </div>
       <div class="wheel-right" id="seg-scores"></div>
     </div>
-    <div class="wheel-note">💡 Each segment score reflects your completion rate for that section — 0% done = 0, 100% done = 10. Complete all items in a section to fill it out.</div>
+    <div class="wheel-note" data-i18n="wheel-note">💡 Each segment score reflects your completion rate for that section — 0% done = 0, 100% done = 10. Complete all items in a section to fill it out.</div>
   </div>
 
   <div class="legend-bar">
     <span class="legend-label">Tags:</span>
     <span class="tag tag-must">✦ Must-have</span>
     <span class="tag tag-nice">◈ Nice-to-have</span>
-    <span class="tag tag-ongoing">↻ Ongoing habit</span>
-    <span class="tag tag-tip">💡 Pro tip</span>
+    <span class="tag tag-ongoing" data-i18n="tag-ongoing">↻ Ongoing habit</span>
+    <span class="tag tag-tip" data-i18n="tag-tip">💡 Pro tip</span>
   </div>
 
-  <div class="wheel-card">
+  <div class="wheel-card jump-target" id="howto">
     <div class="wheel-card-header">
-      <h2>How to <em>get going</em></h2>
+      <h2 data-i18n="howto-h2">How to <em>get going</em></h2>
     </div>
     <ol class="howto-list">
-      <li><strong>Expand a section</strong> — click any section header below (like "Profile Picture") to reveal its checklist items. The first one is already open for you.</li>
-      <li><strong>Check things off</strong> — click an item to mark it done. Your progress saves automatically in this browser, no account needed.</li>
-      <li><strong>Follow the tags</strong> — ✦ Must-have matters most, ◈ Nice-to-have adds polish, ↻ Ongoing habit needs regular upkeep, and 💡 Pro tip gives bonus context.</li>
-      <li><strong>Watch your score</strong> — the progress bar above and the Wheel of Readiness below update live as you complete tasks.</li>
-      <li><strong>Start fresh anytime</strong> — use the Reset button to clear all progress.</li>
+      <li data-i18n="howto-1"><strong>Expand a section</strong> — click any section header below (like "Profile Picture") to reveal its checklist items. The first one is already open for you.</li>
+      <li data-i18n="howto-2"><strong>Check things off</strong> — click an item to mark it done. Your progress saves automatically in this browser, no account needed.</li>
+      <li data-i18n="howto-3"><strong>Follow the tags</strong> — ✦ Must-have matters most, ◈ Nice-to-have adds polish, ↻ Ongoing habit needs regular upkeep, and 💡 Pro tip gives bonus context.</li>
+      <li data-i18n="howto-4"><strong>Watch your score</strong> — the progress bar above and the Wheel of Readiness below update live as you complete tasks.</li>
+      <li data-i18n="howto-5"><strong>Start fresh anytime</strong> — use the Reset button to clear all progress.</li>
     </ol>
   </div>
 
-  <div id="checklist"></div>
+  <div id="checklist" class="jump-target"></div>
 
-  <div class="end-cta">
-    <h2 class="end-cta-heading">See how this tool was <em>built.</em></h2>
-    <p class="end-cta-sub">From a real job-search problem to a deployed interactive tool — read the design and build story behind the Wheel of Readiness.</p>
-    <a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html" target="_blank" class="end-cta-btn">Read case study &rarr;</a>
+  <div class="end-cta jump-target" id="case-study">
+    <h2 class="end-cta-heading" data-i18n="cta-h2">See how this tool was <em>built.</em></h2>
+    <p class="end-cta-sub" data-i18n="cta-sub">From a real job-search problem to a deployed interactive tool — read the design and build story behind the Wheel of Readiness.</p>
+    <a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html" target="_blank" class="end-cta-btn" data-i18n="cta-btn">Read case study &rarr;</a>
   </div>
 
-  <footer class="page-footer">LinkedIn Profile Readiness Guide &nbsp;·&nbsp; <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" style="color:var(--muted);text-decoration:none;">Impressum &amp; Datenschutz</a></footer>
+  <footer class="page-footer">LinkedIn Profile Readiness Guide &nbsp;·&nbsp; <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" style="color:var(--muted);text-decoration:none;" data-i18n="footer-imprint">Imprint &amp; Privacy Policy</a></footer>
 </div>
 
 <script>
 const LS_KEY = 'li-readiness-poc-v1';
+
+/* ===== i18n: EN im Markup und in den Daten, DE im Dictionary, gemeinsamer Key sw-lang ===== */
+const LANG_KEY = 'sw-lang';
+let LANG = 'en';
+try { LANG = localStorage.getItem(LANG_KEY) === 'de' ? 'de' : 'en'; } catch (e) {}
+
+const DE_STATIC = {
+  'nav-portfolio': 'Portfolio',
+  'nav-about': 'Über mich',
+  'nav-imprint': 'Impressum',
+  'nav-open': 'Menü öffnen',
+  'nav-close': 'Menü schließen',
+  'sub-aria': 'Abschnitte auf dieser Seite',
+  'sub-label': 'Auf dieser Seite',
+  'hero-label': 'Interaktives Tool',
+  'sub-progress': 'Fortschritt',
+  'sub-wheel': 'Wheel',
+  'sub-howto': 'Anleitung',
+  'sub-checklist': 'Checkliste',
+  'sub-case': 'Case Study',
+  'subtitle': 'Eine strukturierte Schritt-für-Schritt-Checkliste für alle Bereiche eines starken LinkedIn-Profils, von Must-haves bis Nice-to-haves. Arbeite die Abschnitte der Reihe nach durch und verfolge dabei deinen Fortschritt.',
+  'reset': '↺ Zurücksetzen',
+  'prog-label': 'Gesamtfortschritt',
+  'wheel-sub': 'Aktualisiert sich live beim Abhaken',
+  'wheel-note': '💡 Jeder Segment-Score zeigt deinen Fortschritt im jeweiligen Abschnitt: 0 % erledigt = 0, 100 % erledigt = 10. Erledige alle Punkte eines Abschnitts, um das Segment zu füllen.',
+  'tag-ongoing': '↻ Laufende Gewohnheit',
+  'tag-tip': '💡 Profi-Tipp',
+  'howto-h2': 'So <em>legst du los</em>',
+  'howto-1': '<strong>Abschnitt aufklappen</strong>: Klicke auf eine Abschnittsüberschrift (z. B. „Profilbild“), um die Checklistenpunkte zu sehen. Der erste Abschnitt ist bereits geöffnet.',
+  'howto-2': '<strong>Punkte abhaken</strong>: Klicke auf einen Punkt, um ihn als erledigt zu markieren. Dein Fortschritt wird automatisch in diesem Browser gespeichert, ganz ohne Account.',
+  'howto-3': '<strong>Den Tags folgen</strong>: ✦ Must-have ist am wichtigsten, ◈ Nice-to-have sorgt für den Feinschliff, ↻ Laufende Gewohnheit braucht regelmäßige Pflege und 💡 Profi-Tipp liefert zusätzlichen Kontext.',
+  'howto-4': '<strong>Score im Blick behalten</strong>: Der Fortschrittsbalken und das Wheel of Readiness aktualisieren sich live, während du Aufgaben erledigst.',
+  'howto-5': '<strong>Jederzeit neu starten</strong>: Mit dem Button „Zurücksetzen“ löschst du den gesamten Fortschritt.',
+  'cta-h2': 'Sieh dir an, wie dieses Tool <em>entstanden ist.</em>',
+  'cta-sub': 'Von einem echten Problem aus der Jobsuche zum veröffentlichten interaktiven Tool: die Design- und Entwicklungsgeschichte hinter dem Wheel of Readiness.',
+  'cta-btn': 'Case Study lesen &rarr;',
+  'footer-imprint': 'Impressum &amp; Datenschutz',
+};
+
+const UI = {
+  en: { tasks: 'tasks', complete: '✓ Complete', secComplete: '✓ Section complete', avg: 'avg',
+        confirm: 'Reset all progress? This cannot be undone.', title: 'LinkedIn Profile Readiness Guide',
+        tags: { must: '✦ Must-have', nice: '◈ Nice-to-have', ongoing: '↻ Ongoing habit', tip: '💡 Pro tip' } },
+  de: { tasks: 'Aufgaben', complete: '✓ Erledigt', secComplete: '✓ Abschnitt abgeschlossen', avg: 'Ø',
+        confirm: 'Gesamten Fortschritt zurücksetzen? Das lässt sich nicht rückgängig machen.', title: 'LinkedIn Profile Readiness Guide',
+        tags: { must: '✦ Must-have', nice: '◈ Nice-to-have', ongoing: '↻ Laufende Gewohnheit', tip: '💡 Profi-Tipp' } },
+};
+
+const DE_SEG_LABELS = {
+  photo: 'Profilbild', cover: 'Hintergrund', headline: 'Headline', about: 'Info',
+  experience: 'Erfahrung', education: 'Ausbildung', skills: 'Kenntnisse', certs: 'Zertifikate',
+  connections: 'Networking', recommendations: 'Empfehlungen', extras: 'Extras', secondlang: 'Sprache',
+};
+
+const DE_SEC_TITLES = {
+  photo: 'Profilbild', cover: 'Hintergrundbild', headline: 'Headline', about: 'Info / Zusammenfassung',
+  experience: 'Berufserfahrung', education: 'Ausbildung', skills: 'Kenntnisse & Bestätigungen',
+  certs: 'Bescheinigungen, Zertifikate & Sprachen', connections: 'Kontakte & Gruppen',
+  recommendations: 'Empfehlungen', extras: 'Auszeichnungen, Ehrenamt & Organisationen',
+  secondlang: 'Profil in einer anderen Sprache',
+};
+
+const DE_ITEMS = {
+  ph1: ['Ein professionelles, hochwertiges Foto verwenden, mit Blick direkt in die Kamera', 'Keine zugeschnittenen Urlaubs- oder Partyfotos.'],
+  ph2: ['Lächeln und dich so präsentieren wie in einem Video-Vorstellungsgespräch'],
+  ph3: ['Einen ruhigen, nicht ablenkenden Hintergrund wählen'],
+  ph4: ['Bei einem Berufswechsel prüfen, ob dein Foto noch zu dem passt, wer du heute bist'],
+  cv1: ['Das Standard-Banner von LinkedIn durch ein eigenes Hintergrundbild ersetzen', 'Standard-Banner wirken wie ein unvollständiges Profil.'],
+  cv2: ['Ein Bild wählen, das dein Fachgebiet, deine Persönlichkeit oder deine Marke widerspiegelt', 'Ideen: dein Arbeitsplatz, deine Stadt, ein Design- oder Daten-Visual, ein Lieblingszitat.'],
+  hl1: ['Eine präzise Headline schreiben, die deine Zielrolle klar kommuniziert', 'Formel: Jobtitel | Stack oder Tools | Branche | Kernstärke | (Remote-First, falls zutreffend)'],
+  hl2: ['2 bis 3 Nischen-Keywords aufnehmen, nach denen Recruiter suchen könnten'],
+  hl3: ['Zeigen, wer du JETZT bist, nicht wer du vor deinem Wechsel warst'],
+  hl4: ['Unter 220 Zeichen bleiben'],
+  hl5: ['Eine Version in einer zweiten Sprache erstellen, falls für deinen Markt relevant'],
+  ab1: ['Deine Wunschrolle nennen und mit einem glaubwürdigen Bezug zu deinem Hintergrund abschließen', 'z. B. „Ich bin UX Designer mit Hintergrund in Frontend-Entwicklung …“'],
+  ab2: ['Deine relevanten Skills beschreiben, fachliche wie übertragbare'],
+  ab3: ['Echte Begeisterung für deine berufliche Richtung oder deinen Wechsel zeigen'],
+  ab4: ['Deine wichtigsten Tools und Programme auflisten, damit Recruiter sofort einen Eindruck bekommen'],
+  ab5: ['Mit einem klaren „Offen für“-Statement enden: Rollen, Standort, Remote oder Hybrid'],
+  ab6: ['Das Limit von 2.000 Zeichen einhalten'],
+  ab7: ['Eine Version in einer zweiten Sprache für ein Zweitprofil schreiben'],
+  ab8: ['KI-generierten Text personalisieren: Er sollte nach dir klingen, nicht nach einer Vorlage'],
+  ex1: ['Alle relevanten Berufserfahrungen mit korrekten Daten und Jobtiteln eintragen'],
+  ex2: ['Bullet Points im CAR-Format schreiben: Context → Action → Result', 'z. B. „Onboarding-Daten analysiert und Dashboards gebaut, Einarbeitungszeit um 30 % reduziert.“'],
+  ex3: ['Einen aktuellen Eintrag „Berufliche Weiterbildung“ anlegen, falls du gerade nicht angestellt bist', 'Bootcamp, Kurse und laufende Projekte hier eintragen, damit dein Profil aktiv wirkt.'],
+  ex4: ['Lücken ab 6 bis 12 Monaten explizit erklären', 'Die LinkedIn-Funktion „Karrierepause“ nutzen. Die Darstellung konsistent zum Lebenslauf halten.'],
+  ex5: ['Erklärungen zu Lücken in Lebenslauf und LinkedIn einheitlich formulieren', 'Recruiter gleichen beides ab.'],
+  ex6: ['Medien-Links zu passenden Einträgen hinzufügen: Portfolio-URLs, GitHub-Repos oder Projektseiten'],
+  ex7: ['3 Stellenanzeigen analysieren und ihre Schlüsselbegriffe authentisch in deine Bullet Points einbauen'],
+  ed1: ['Alle Abschlüsse mit Hochschule, Fachrichtung und Abschlussjahr eintragen'],
+  ed2: ['Dein Bootcamp unter Ausbildung eintragen: So wirst du in Alumni-Suchen gefunden'],
+  ed3: ['Relevante Abschlussarbeiten oder datenbezogene Arbeiten erwähnen, falls zutreffend'],
+  ed4: ['Dein Abschlusszertifikat hochladen oder verlinken, sobald du es hast'],
+  sk1: ['10 bis 15 gefragte Kenntnisse für deine Zielrolle hinzufügen', 'Möglich sind bis zu 50. Qualität geht vor Quantität.'],
+  sk2: ['Deine 5 wichtigsten Kenntnisse anpinnen, damit sie zuerst erscheinen'],
+  sk3: ['Fachliche Kenntnisse (Tools, Sprachen) und übertragbare Kenntnisse (Research, Kommunikation) aufnehmen'],
+  sk4: ['Kolleg:innen und Kursteilnehmende um Bestätigungen bitten und selbst welche geben', 'Bestätigte Kenntnisse verbessern deine Keyword-Sichtbarkeit in der LinkedIn-Suche.'],
+  ce1: ['Relevante abgeschlossene Kurse und Zertifizierungen mit Datum eintragen'],
+  ce2: ['Alle Sprachen, die du sprichst, mit Kenntnisstand angeben'],
+  cn1: ['Mehr als 200 Kontakte anstreben: Profile darunter sind in der Suche weniger sichtbar'],
+  cn2: ['Der LinkedIn-Gruppe deines Bootcamps oder deiner Alumni beitreten', 'Einfacher Weg, dein relevantes Netzwerk sofort zu erweitern.'],
+  cn3: ['1 bis 2 Fachgruppen beitreten, die zu deiner Zielrolle oder Branche passen'],
+  cn4: ['Pro Woche mit mindestens 3 Personen aus Zielunternehmen oder deinem Fachgebiet vernetzen'],
+  cn5: ['Mit relevanten Hashtags und Communitys in deinem Fachgebiet interagieren'],
+  cn6: ['Einmal pro Woche über Gelerntes, Projekte oder berufliche Erkenntnisse posten'],
+  re1: ['2 bis 3 Personen auswählen, mit denen du eng zusammengearbeitet hast, und um Empfehlungen bitten', 'Eine Mischung aus Kolleg:innen, Führungskräften und Mentor:innen macht dich glaubwürdiger.'],
+  re2: ['Eine kurze, persönliche Anfrage schicken und kurz sagen, was hervorgehoben werden soll'],
+  re3: ['Anbieten, im Gegenzug eine Empfehlung zu schreiben'],
+  ex1b: ['Öffentlich anerkannte Auszeichnungen oder Preise eintragen'],
+  vo1: ['Ehrenamtliches Engagement eintragen, falls relevant: Es zeigt Einsatz über den Job hinaus'],
+  or1: ['Berufliche Mitgliedschaften oder Organisationen eintragen, denen du angehörst'],
+  sl1: ['Ein Zweitprofil in einer anderen Sprache anlegen, falls für deinen Arbeitsmarkt relevant', 'Im Profil oben rechts: „Profil in einer anderen Sprache hinzufügen“.'],
+  sl2: ['Headline und Info-Bereich übersetzen und dabei die gleiche Positionierung beibehalten'],
+};
+
+const ui = () => UI[LANG];
+const itemText = it => (LANG === 'de' && DE_ITEMS[it.id]) ? DE_ITEMS[it.id][0] : it.text;
+const itemHint = it => {
+  if (!it.hint) return null;
+  return (LANG === 'de' && DE_ITEMS[it.id] && DE_ITEMS[it.id][1]) ? DE_ITEMS[it.id][1] : it.hint;
+};
+const secTitle = sec => (LANG === 'de' && DE_SEC_TITLES[sec.id]) || sec.title;
+const segLabel = seg => (LANG === 'de' && DE_SEG_LABELS[seg.id]) || seg.label;
+
+const enCache = new Map();
+const ariaCache = new Map();
+function applyStatic() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    if (!enCache.has(el)) enCache.set(el, el.innerHTML);
+    const de = DE_STATIC[el.getAttribute('data-i18n')];
+    el.innerHTML = (LANG === 'de' && de !== undefined) ? de : enCache.get(el);
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    if (!ariaCache.has(el)) ariaCache.set(el, el.getAttribute('aria-label'));
+    const de = DE_STATIC[el.getAttribute('data-i18n-aria')];
+    el.setAttribute('aria-label', (LANG === 'de' && de !== undefined) ? de : ariaCache.get(el));
+  });
+  document.documentElement.lang = LANG;
+  document.title = ui().title;
+  document.querySelectorAll('[data-lang]').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-lang') === LANG);
+  });
+}
+
+window.switchLang = function (lang) {
+  if (lang !== 'en' && lang !== 'de') return;
+  LANG = lang;
+  try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+  applyStatic();
+  const openIds = [...document.querySelectorAll('.section-card.open')].map(el => el.id);
+  buildSegScores();
+  buildChecklist();
+  document.querySelectorAll('.section-card').forEach(el => el.classList.toggle('open', openIds.includes(el.id)));
+  updateProgress();
+  drawWheel();
+};
+
+document.querySelectorAll('[data-lang]').forEach(b => {
+  b.addEventListener('click', () => window.switchLang(b.getAttribute('data-lang')));
+});
+
+
 
 const CHEVRON_SVG = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.29289 8.29289C4.68342 7.90237 5.31658 7.90237 5.70711 8.29289L12 14.5858L18.2929 8.29289C18.6834 7.90237 19.3166 7.90237 19.7071 8.29289C20.0976 8.68342 20.0976 9.31658 19.7071 9.70711L12.7071 16.7071C12.3166 17.0976 11.6834 17.0976 11.2929 16.7071L4.29289 9.70711C3.90237 9.31658 3.90237 8.68342 4.29289 8.29289Z" fill="currentColor"/></svg>';
 
@@ -912,16 +1242,16 @@ function buildChecklist() {
         <span class="sec-chevron">${CHEVRON_SVG}</span>
         <span class="sec-emoji">${sec.emoji}</span>
         <span class="sec-num">${num}.</span>
-        <span class="sec-title" style="color:${sec.color}">${sec.title}</span>
+        <span class="sec-title" style="color:${sec.color}">${secTitle(sec)}</span>
         <span class="sec-count" id="cnt-${sec.id}">${done}/${total}</span>
         <div class="sec-minibar-wrap">
           <div class="sec-minibar-fill" id="bar-${sec.id}" style="background:${sec.color};width:${pct}%"></div>
         </div>
-        <span class="sec-done-badge">✓ Complete</span>
+        <span class="sec-done-badge">${ui().complete}</span>
       </div>
       <div class="section-body" id="body-${sec.id}">
         ${sec.items.map(it => buildItemHTML(it)).join('')}
-        <div class="sec-complete-stamp">✓ Section complete</div>
+        <div class="sec-complete-stamp">${ui().secComplete}</div>
       </div>
     `;
     if (done === total) secEl.classList.add('all-done');
@@ -938,14 +1268,14 @@ function buildChecklist() {
 }
 
 function buildItemHTML(it) {
-  const tag = TAG_CONFIG[it.tag];
+  const tag = { cls: TAG_CONFIG[it.tag].cls, label: ui().tags[it.tag] };
   const isDone = state[it.id] ? ' done' : '';
   return `
     <div class="item${isDone}" id="item-${it.id}">
       <div class="item-checkbox"></div>
       <div class="item-content">
-        <div class="item-text">${it.text}</div>
-        ${it.hint ? `<div class="item-hint">${it.hint}</div>` : ''}
+        <div class="item-text">${itemText(it)}</div>
+        ${itemHint(it) ? `<div class="item-hint">${itemHint(it)}</div>` : ''}
       </div>
       <div class="item-footer">
         <span class="tag ${tag.cls}">${tag.label}</span>
@@ -984,7 +1314,7 @@ function updateProgress() {
     done += sec.items.filter(it => state[it.id]).length;
   });
   const pct = total ? Math.round(done / total * 100) : 0;
-  document.getElementById('prog-nums').textContent = `${done} / ${total} tasks`;
+  document.getElementById('prog-nums').textContent = `${done} / ${total} ${ui().tasks}`;
   document.getElementById('prog-pct').textContent = `${pct}%`;
   document.getElementById('prog-fill').style.width = pct + '%';
 }
@@ -1076,7 +1406,7 @@ function drawWheel() {
   ctx.fillText(avgStr, cx, cy - 4);
   ctx.fillStyle = '#8a8880';
   ctx.font = '9px sans-serif';
-  ctx.fillText('avg', cx, cy + 9);
+  ctx.fillText(ui().avg, cx, cy + 9);
   SEGMENTS.forEach((seg, i) => {
     const midAngle = startOffset + i * sliceAngle + sliceAngle / 2;
     const labelR = R + 16;
@@ -1100,7 +1430,7 @@ function buildSegScores() {
     row.className = 'seg-row';
     row.innerHTML = `
       <span class="seg-emoji">${seg.emoji}</span>
-      <span class="seg-label">${seg.label}</span>
+      <span class="seg-label">${segLabel(seg)}</span>
       <div class="seg-bar-wrap">
         <div class="seg-bar-fill" id="segbar-${seg.id}" style="background:${seg.color};width:${score*10}%"></div>
       </div>
@@ -1111,7 +1441,7 @@ function buildSegScores() {
 }
 
 document.getElementById('reset-btn').addEventListener('click', () => {
-  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  if (!confirm(ui().confirm)) return;
   state = {};
   saveState();
   document.querySelectorAll('.item').forEach(el => el.classList.remove('done'));
@@ -1124,10 +1454,105 @@ document.getElementById('reset-btn').addEventListener('click', () => {
 });
 
 loadState();
+applyStatic();
 buildSegScores();
 buildChecklist();
 updateProgress();
 drawWheel();
+
+/* ===== Mobile Drawer ===== */
+(function () {
+  var toggle = document.getElementById('navToggle');
+  var closeBtn = document.getElementById('navDrawerClose');
+  var drawer = document.getElementById('navDrawer');
+  var overlay = document.getElementById('navOverlay');
+  var lastFocused = null;
+
+  /* Close-Button exakt auf die gemessene Position des Hamburgers legen.
+     Unabhängig von Scrollbar, Browser-Defaults oder späteren Padding-Änderungen. */
+  function alignCloseToToggle() {
+    var t = toggle.getBoundingClientRect();
+    var d = drawer.getBoundingClientRect();
+    var tf = getComputedStyle(drawer).transform;
+    var shift = (tf && tf !== 'none') ? new DOMMatrixReadOnly(tf).m41 : 0;
+    var drawerLeft = d.left - shift; /* Endposition des Drawers, unabhängig von der Slide-Animation */
+    closeBtn.style.left  = (t.left - drawerLeft) + 'px';
+    closeBtn.style.top   = t.top + 'px';
+    closeBtn.style.right = 'auto';
+  }
+
+  function openDrawer() {
+    lastFocused = document.activeElement;
+    document.body.style.overflow = 'hidden';
+    drawer.scrollTop = 0;
+    alignCloseToToggle();
+    drawer.setAttribute('data-open', 'true');
+    drawer.setAttribute('aria-hidden', 'false');
+    overlay.setAttribute('data-open', 'true');
+    toggle.setAttribute('aria-expanded', 'true');
+    closeBtn.focus();
+    document.addEventListener('keydown', onKeydown);
+  }
+
+  function closeDrawer() {
+    drawer.setAttribute('data-open', 'false');
+    drawer.setAttribute('aria-hidden', 'true');
+    overlay.setAttribute('data-open', 'false');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', onKeydown);
+    if (lastFocused) lastFocused.focus();
+  }
+
+  function onKeydown(e) {
+    if (e.key === 'Escape') closeDrawer();
+    if (e.key === 'Tab') {
+      var focusables = drawer.querySelectorAll('a, button');
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    }
+  }
+
+  toggle.addEventListener('click', openDrawer);
+  window.addEventListener('resize', function () {
+    if (drawer.getAttribute('data-open') === 'true') alignCloseToToggle();
+  });
+  closeBtn.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+
+  /* Tap auf einen Sprungpunkt schließt den Drawer */
+  document.querySelectorAll('.subnav-drawer-item').forEach(function (a) {
+    a.addEventListener('click', function () {
+      lastFocused = null;
+      closeDrawer();
+    });
+  });
+})();
+
+/* ===== Subnav: aktiven Abschnitt markieren ===== */
+(function () {
+  var ids = ['progress', 'wheel', 'howto', 'checklist', 'case-study'];
+  var sections = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+  var links = document.querySelectorAll('.subnav a, .subnav-drawer-item');
+  function update() {
+    var offset = window.innerWidth <= 640 ? 80 : 124;
+    var current = null;
+    sections.forEach(function (sec) { if (sec.getBoundingClientRect().top - offset <= 0) current = sec.id; });
+    /* Am Seitenende den letzten Abschnitt aktiv setzen, auch wenn er nicht bis oben scrollen kann */
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) current = ids[ids.length - 1];
+    links.forEach(function (a) {
+      a.classList.toggle('active', current !== null && a.getAttribute('href') === '#' + current);
+    });
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
 </script>
 </body>
 </html>
