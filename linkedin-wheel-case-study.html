@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0089)https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-case-study.html -->
 <html lang="de"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- PostHog — Enhanced Tracking (consent-gated: nothing is captured, including -->
 <!-- session recording, until the visitor accepts the cookie banner below.) -->
@@ -27,10 +26,10 @@
 
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="https://sebastian-weber.github.io/linkedin-readiness-guide/sw_favicon32.svg">
+  <link rel="icon" type="image/svg+xml" href="https://sebastian-weber.github.io/uxui-portfolio/sw_favicon32.svg">
   <title>LinkedIn Profile Readiness Guide · Case Study · Sebastian Weber</title>
   <link rel="preconnect" href="https://fonts.googleapis.com/">
-  <link href="./css2" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
       --coral:   #E06040;
@@ -45,6 +44,9 @@
     }
 
     html { scroll-behavior: smooth; }
+    /* Platz der Scrollbar dauerhaft reservieren: verhindert den Layout-Sprung,
+       wenn beim Öffnen des Drawers das Scrollen gesperrt wird */
+    html { scrollbar-gutter: stable; }
 
     /* Progress bar */
     #progress {
@@ -63,99 +65,74 @@
       min-height: 100vh;
     }
 
+    /* ===== Navbar (identisch zu den übrigen Portfolio-Seiten) ===== */
     nav {
-      padding: 0 48px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(250, 250, 250, 0.94);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: var(--paper);
-      z-index: 10;
+      z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 56px;
     }
-
-    .logo {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--dark);
-      text-decoration: none;
-      letter-spacing: -0.01em;
-    }
-
-    .nav-links {
-      display: flex; gap: 20px; list-style: none; align-items: center;
-    }
-
-    .nav-links a {
-      font-size: 13px; color: var(--muted);
-      text-decoration: none; font-weight: 500;
-      transition: color 0.15s;
-    }
-
+    .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+    .nav-links a { font-size: 13px; color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.15s; }
     .nav-links a:hover { color: var(--text); }
+    .nav-links a.nav-current { color: var(--text); font-weight: 700; }
+    .nav-links .nav-flex-item { display: inline-block; min-width: 76px; text-align: center; }
 
-    .nav-tag-coral {
-      background: #FDF0EC; color: var(--coral);
-      padding: 4px 12px; border-radius: 20px;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      pointer-events: none;
+    .lang-switch { display: flex; align-items: center; gap: 6px; }
+    .lang-switch button {
+      font-family: inherit; background: none; border: none;
+      font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; padding: 2px;
     }
+    .lang-switch button.active { color: var(--text); font-weight: 700; }
+    .lang-switch .sep { color: var(--border); }
 
-    .nav-cta {
-      background: var(--coral); color: var(--white) !important;
-      padding: 7px 16px; border-radius: 7px;
-      font-size: 13px !important; font-weight: 600 !important;
-      transition: background 0.15s;
-      text-decoration: none;
+    /* ===== Subnav: In-Page-Sprungpunkte (Case Study = Coral) ===== */
+    .subnav {
+      position: fixed; top: 56px; left: 0; right: 0; z-index: 40;
+      background: rgba(250, 250, 250, 0.94); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: flex-end; align-items: center; gap: 24px;
+      padding: 0 48px; height: 44px;
+      overflow-x: auto; scrollbar-width: none;
     }
-
-    .nav-cta:hover { background: #C84B2A !important; }
-
-    .nav-back {
-      margin-left: auto;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      text-decoration: none;
-      letter-spacing: 0.04em;
+    .subnav::-webkit-scrollbar { display: none; }
+    .subnav a {
+      font-size: 12px; font-weight: 600; color: var(--muted); text-decoration: none;
+      white-space: nowrap; padding: 4px 2px; border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s; flex-shrink: 0;
     }
-
-    .nav-back:hover { color: var(--coral); }
+    .subnav a:hover { color: var(--text); }
+    .subnav a.active { color: var(--coral); border-bottom-color: var(--coral); }
+    .section[id] { scroll-margin-top: 116px; }
 
     /* Hero */
     .hero {
       max-width: 860px;
       margin: 0 auto;
-      padding: 120px 48px 64px;
+      padding: 180px 48px 64px;
     }
 
-    .hero-tag {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      padding: 4px 10px;
-      border-radius: 20px;
-      background: #FDF0EC;
-      color: var(--coral);
-      display: inline-block;
-      margin-bottom: 24px;
+    .hero-label {
+      font-size: 11px; font-weight: 600; color: var(--coral);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
     }
+    .hero-label::before { content: ''; display: block; width: 32px; height: 1.5px; background: var(--coral); }
 
     .hero h1 {
       font-size: clamp(28px, 4vw, 48px);
       font-weight: 700;
       color: var(--dark);
       line-height: 1.15;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
       margin-bottom: 16px;
     }
 
     .hero-sub {
-      font-size: 16px;
+      font-size: 17px;
       color: var(--muted);
       font-style: italic;
       max-width: 580px;
@@ -502,9 +479,14 @@
     }
 
     .btn:hover { background: #C84B2A; }
-    @media (max-width: 640px) {
+    @media (max-width: 860px) {
       nav { padding: 0 20px; }
-      .hero { padding: 60px 20px 48px; }
+      .subnav { padding: 0 20px; }
+    }
+    @media (max-width: 640px) {
+      .subnav { display: none; }
+      .section[id] { scroll-margin-top: 72px; }
+      .hero { padding: 116px 20px 48px; }
       .body { padding: 0 20px 80px; }
       .process-step { grid-template-columns: 1fr; }
       .process-step.reverse .step-img { order: 0; }
@@ -518,6 +500,8 @@
       background: none;
       border: none;
       padding: 8px;
+      margin: 0;
+      -webkit-appearance: none; appearance: none;
       cursor: pointer;
       color: var(--text);
     }
@@ -530,17 +514,41 @@
       width: min(78vw, 320px);
       background: var(--paper);
       z-index: 200;
-      padding: 20px;
+      padding: 0 20px 20px;
       transform: translateX(100%);
       transition: transform 0.28s ease;
       display: flex;
       flex-direction: column;
       box-shadow: -8px 0 24px rgba(0,0,0,0.08);
+      overflow-y: auto;
     }
     .nav-drawer[data-open="true"] { transform: translateX(0); }
 
-    .nav-drawer__header { display: flex; justify-content: flex-end; margin-bottom: 24px; }
-    .nav-drawer__close { background: none; border: none; padding: 8px; cursor: pointer; color: var(--text); }
+    .nav-drawer__header {
+      height: 55px;          /* Platzhalter: hält den Abstand zu den Links */
+      margin-bottom: 25px;
+      flex-shrink: 0;
+    }
+    /* Close-Button liegt bewusst AUSSERHALB des Drawers: Der Drawer ist per transform
+       verschoben, ein Kind-Element hätte dadurch ein eigenes Koordinatensystem.
+       So teilen Hamburger und Close-Button dasselbe Bezugssystem (Viewport). */
+    .nav-drawer__close {
+      position: fixed; z-index: 210;
+      top: 7.5px; right: 20px; /* CSS-Fallback, falls JS nicht läuft */
+      background: none; border: none; padding: 8px; margin: 0;
+      cursor: pointer; color: var(--text);
+      -webkit-appearance: none; appearance: none;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+    }
+    .nav-drawer__close[data-open="true"] {
+      opacity: 1; visibility: visible;
+      transition: opacity 0.28s ease, visibility 0s;
+    }
+    .nav-drawer__close svg { display: block; }
+    .nav-drawer__section-label { display: flex; align-items: center; padding: 16px 4px; font-size: 18px; font-weight: 500; color: var(--text); min-height: 44px; }
+    .nav-drawer__links a.subnav-drawer-item { padding-left: 22px; }
+    .nav-drawer__links a.subnav-drawer-item.active { color: var(--coral); font-weight: 700; }
 
     .nav-drawer__links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
     .nav-drawer__links li { border-bottom: 1px solid var(--border); }
@@ -570,7 +578,8 @@
     .nav-overlay[data-open="true"] { opacity: 1; pointer-events: auto; }
 
     @media (prefers-reduced-motion: reduce) {
-      .nav-drawer, .nav-overlay { transition: none; }
+      html { scroll-behavior: auto; }
+      .nav-drawer, .nav-overlay, .nav-drawer__close { transition: none; }
     }
 
     @media (max-width: 640px) {
@@ -580,76 +589,91 @@
 
   </style>
 </head>
-<body cz-shortcut-listen="true">
+<body>
 
   <div id="progress"></div>
   <div id="cookie-banner" style="display:none;">
-  <p>Diese Seite verwendet PostHog, um anonymisierte Nutzungsstatistiken und Sitzungsaufzeichnungen zu erstellen. <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" target="_blank">Datenschutz</a></p>
-  <button class="cookie-btn cookie-decline" onclick="decideConsent(false)">Ablehnen</button>
-  <button class="cookie-btn cookie-accept" onclick="decideConsent(true)">Akzeptieren</button>
+  <p data-en="c0">Diese Seite verwendet PostHog, um anonymisierte Nutzungsstatistiken und Sitzungsaufzeichnungen zu erstellen. <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" target="_blank">Datenschutz</a></p>
+  <button class="cookie-btn cookie-decline" onclick="decideConsent(false)" data-en="c1">Ablehnen</button>
+  <button class="cookie-btn cookie-accept" onclick="decideConsent(true)" data-en="c2">Akzeptieren</button>
 </div>
 
   <nav>
     <a href="https://sebastian-weber.github.io/uxui-portfolio/index.html" class="logo" aria-label="Sebastian Weber - Home" style="display:flex;align-items:center;line-height:0;margin-right:8px;"><svg width="40" height="40" style="display:block;margin-top:-2px;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M0 19.0413V20.7092L15.9986 26.8336V25.3991L11.7131 23.7928V23.7848L10.3368 23.2366L1.51283 19.9819L10.3384 16.7504V16.7576L11.7146 16.2587L16.0001 14.6524V13.1113L0 19.0413Z" fill="#0F1117"></path><path d="M16.0001 24.0696V22.4023L0 16.2773V17.7113L4.2859 19.317V19.3279L5.66227 19.8759L14.4871 23.1294L5.66227 26.3619V26.3546L4.2859 26.8534L0 28.4591V29.9996L16.0001 24.0696Z" fill="#0F1117"></path><path d="M20.3237 26.8333H22.1382L28.8006 11H27.2401L25.4927 15.242H25.4809L24.8844 16.6032L21.3438 25.3361L17.826 16.6032H17.8339L17.2911 15.242L15.5436 11H13.8672L20.3237 26.8333Z" fill="#0F1117"></path><path d="M23.5229 26.8333H25.3374L31.9998 11H30.4394L28.6919 15.2418H28.6801L28.0837 16.603L24.543 25.3354L21.0252 16.603H21.0331L20.4903 15.2418L18.7429 11H17.0664L23.5229 26.8333Z" fill="#0F1117"></path></svg></a>
     <ul class="nav-links">
-      <li><span class="nav-current" data-i18n="nav-portfolio" aria-current="page">Portfolio</span></li>
-      <li><a href="https://sebastian-weber.github.io/uxui-portfolio/about.html" class="nav-flex-item" data-i18n="nav-about">About</a></li>
-      <li><a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" class="nav-flex-item" data-i18n="nav-imprint">Imprint</a></li>
+      <li><a href="https://sebastian-weber.github.io/uxui-portfolio/index.html" class="nav-current" data-i18n="nav-portfolio">Portfolio</a></li>
+      <li><a href="https://sebastian-weber.github.io/uxui-portfolio/about.html" class="nav-flex-item" data-i18n="nav-about">Über mich</a></li>
+      <li><a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" class="nav-flex-item" data-i18n="nav-imprint">Impressum</a></li>
       <li>
         <span class="lang-switch">
           <button type="button" data-lang="de">DE</button>
           <span class="sep">|</span>
-          <button type="button" data-lang="en" class="active">EN</button>
+          <button type="button" data-lang="en">EN</button>
         </span>
       </li>
-      <li><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank">LinkedIn</a></li>
+      <li><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank" rel="noopener">LinkedIn</a></li>
     </ul>
-    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navDrawer" aria-label="Menü öffnen">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navDrawer" aria-label="Menü öffnen" data-i18n="nav-open" data-i18n-target="aria">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
   </nav>
+
+  <div class="subnav" id="subnav" role="navigation" aria-label="Abschnitte auf dieser Seite" data-i18n="sub-aria" data-i18n-target="aria">
+    <a href="#problem" data-i18n="sub-problem">Problem</a>
+    <a href="#ausloeser" data-i18n="sub-trigger">Auslöser</a>
+    <a href="#umsetzung" data-i18n="sub-execution">Umsetzung</a>
+    <a href="#arbeitsweise" data-i18n="sub-approach">Arbeitsweise</a>
+    <a href="#ergebnis" data-i18n="sub-result">Ergebnis</a>
+    <a href="#reflexion" data-i18n="sub-reflection">Reflexion</a>
+  </div>
 
   <div class="nav-overlay" id="navOverlay" data-open="false"></div>
 
   <aside class="nav-drawer" id="navDrawer" data-open="false" aria-hidden="true">
-    <div class="nav-drawer__header">
-      <button class="nav-drawer__close" id="navDrawerClose" aria-label="Menü schließen">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-    </div>
+    <div class="nav-drawer__header"></div>
     <ul class="nav-drawer__links">
-      <li><span class="nav-current" data-i18n="nav-portfolio" aria-current="page">Portfolio</span></li>
-      <li><a href="https://sebastian-weber.github.io/uxui-portfolio/about.html" data-i18n="nav-about">About</a></li>
-      <li><a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" data-i18n="nav-imprint">Imprint</a></li>
+      <li><a href="https://sebastian-weber.github.io/uxui-portfolio/index.html" class="nav-current" data-i18n="nav-portfolio">Portfolio</a></li>
+      <li><a href="https://sebastian-weber.github.io/uxui-portfolio/about.html" data-i18n="nav-about">Über mich</a></li>
+      <li><a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" data-i18n="nav-imprint">Impressum</a></li>
       <li>
         <div class="nav-drawer__lang">
           <button type="button" data-lang="de">DE</button>
           <span class="sep">|</span>
-          <button type="button" data-lang="en" class="active">EN</button>
+          <button type="button" data-lang="en">EN</button>
         </div>
       </li>
-      <li><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank">LinkedIn</a></li>
+      <li><a href="https://linkedin.com/in/sebastian-weber1708" target="_blank" rel="noopener">LinkedIn</a></li>
+      <li class="nav-drawer__section-label" data-i18n="sub-label">Auf dieser Seite</li>
+      <li><a href="#problem" class="subnav-drawer-item" data-i18n="sub-problem">Problem</a></li>
+      <li><a href="#ausloeser" class="subnav-drawer-item" data-i18n="sub-trigger">Auslöser</a></li>
+      <li><a href="#umsetzung" class="subnav-drawer-item" data-i18n="sub-execution">Umsetzung</a></li>
+      <li><a href="#arbeitsweise" class="subnav-drawer-item" data-i18n="sub-approach">Arbeitsweise</a></li>
+      <li><a href="#ergebnis" class="subnav-drawer-item" data-i18n="sub-result">Ergebnis</a></li>
+      <li><a href="#reflexion" class="subnav-drawer-item" data-i18n="sub-reflection">Reflexion</a></li>
     </ul>
   </aside>
+  <button class="nav-drawer__close" id="navDrawerClose" data-open="false" aria-label="Menü schließen" data-i18n="nav-close" data-i18n-target="aria">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
 
 
   <div class="hero">
-    <span class="hero-tag">Case Study</span>
+    <div class="hero-label">Case Study</div>
     <h1>LinkedIn Profile<br>Readiness Guide</h1>
-    <p class="hero-sub">Ein statisches PDF wird in 21 Stunden zum interaktiven Tool. Ohne Figma, ohne Handoff, alles aus einer Hand. Natürliche Sprache als Interface, Vibe Coding als Methode.</p>
+    <p class="hero-sub" data-en="c3">Ein statisches PDF wird in 21 Stunden zum interaktiven Tool. Ohne Figma, ohne Handoff, alles aus einer Hand. Natürliche Sprache als Interface, Vibe Coding als Methode.</p>
 
     <div class="hero-visual">
-      <img src="./screenshot-wheel.png">
+      <img src="./screenshot-wheel.png" alt="LinkedIn Profile Readiness Guide mit Wheel of Readiness" data-en-alt="alt0">
     </div>
 
     <div class="meta-row">
       <div class="meta-item">
-        <span class="meta-label">Typ</span>
+        <span class="meta-label" data-en="c4">Typ</span>
         <span class="meta-value">Problem Discovery &amp; Execution</span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">Kontext</span>
-        <span class="meta-value">neuefische Bootcamp, April–Mai 2026</span>
+        <span class="meta-label" data-en="c5">Kontext</span>
+        <span class="meta-value" data-en="c6">neuefische Bootcamp, April–Mai 2026</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Stack</span>
@@ -657,7 +681,7 @@
       </div>
       <div class="meta-item">
         <span class="meta-label">Tool</span>
-        <span class="meta-value"><a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-index.html" style="color:var(--coral);font-weight:600;">Live ansehen →</a></span>
+        <span class="meta-value"><a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-index.html" style="color:var(--coral);font-weight:600;" data-en="c7">Live ansehen →</a></span>
       </div>
     </div>
   </div>
@@ -667,185 +691,177 @@
     <!-- PROBLEM -->
     <div class="section" id="problem">
       <div class="section-label">Problem</div>
-      <h2>Kein Foto. Kein Banner. Keine Aktivität.</h2>
+      <h2 data-en="c8">Kein Foto. Kein Banner. Keine Aktivität.</h2>
 
       <div class="step-img" style="margin:32px 0 0;max-width:480px;">
-        <img src="./wip_empty_profile.png">
+        <img src="./wip_empty_profile.png" alt="Leeres LinkedIn-Profil ohne Foto, Banner und Aktivität" data-en-alt="alt1">
       </div>
 
-      <p class="img-caption" style="margin-top:6px !important;margin-bottom:32px !important;">Kein Foto. Kein Banner. Keine Aktivität.</p>
-      <p>Wann hast du zuletzt jemanden auf LinkedIn angeschrieben, der dich nicht kennt? Ich nie. LinkedIn benutzte ich als Jobboard. Mehr nicht. Das war der Stand bei mir, und wie sich im Bootcamp-Discord schnell zeigte, auch bei anderen.</p>
+      <p class="img-caption" style="margin-top:6px !important;margin-bottom:32px !important;" data-en="c9">Kein Foto. Kein Banner. Keine Aktivität.</p>
+      <p data-en="c10">Wann hast du zuletzt jemanden auf LinkedIn angeschrieben, der dich nicht kennt? Ich nie. LinkedIn benutzte ich als Jobboard. Mehr nicht. Das war der Stand bei mir, und wie sich im Bootcamp-Discord schnell zeigte, auch bei anderen.</p>
 
 
-      <p>Der Career Compass von neuefische setzte genau dort an. Aber das Material selbst wurde zur neuen Hemmschwelle. 43 Lectures, knapp 7 Stunden, neben einem laufenden intensiven Weiterbildungsprogramm. Wer anfing zu arbeiten, merkte schnell: alles hängt mit allem zusammen. Der Banner beeinflusst den Headline-Text. Der Headline-Text hängt am Positioning. Das Positioning sitzt noch nicht. Also nichts ist fertig.</p>
-      <p>Die Reihenfolge war da. Aber jede Änderung zog sofort andere Bereiche nach sich. Man kam ins Stocken, fing von vorne an, kam nie zu einem überzeugenden Abschluss.</p>
+      <p data-en="c11">Der Career Compass von neuefische setzte genau dort an. Aber das Material selbst wurde zur neuen Hemmschwelle. 43 Lectures, knapp 7 Stunden, neben einem laufenden intensiven Weiterbildungsprogramm. Wer anfing zu arbeiten, merkte schnell: alles hängt mit allem zusammen. Der Banner beeinflusst den Headline-Text. Der Headline-Text hängt am Positioning. Das Positioning sitzt noch nicht. Also nichts ist fertig.</p>
+      <p data-en="c12">Die Reihenfolge war da. Aber jede Änderung zog sofort andere Bereiche nach sich. Man kam ins Stocken, fing von vorne an, kam nie zu einem überzeugenden Abschluss.</p>
     </div>
 
     <!-- AUSLÖSER -->
     <div class="section" id="ausloeser">
-      <div class="section-label">Der Auslöser</div>
-      <h2>Gute Metaphern lassen mich nicht los.</h2>
-      <p>Innerhalb des Career Compass gab es ein Konzept, das mich nicht losließ: das Wheel of Readiness for the Market. Nicht wegen seiner Funktion, sondern wegen der Metapher dahinter.</p>
-      <p>Als UX/UI Designer weiß ich um die Bedeutung von Metaphern für die Gestaltung mentaler Modelle. Eine gute Metapher reduziert Komplexität, indem sie etwas Unbekanntes an etwas Bekanntes ankoppelt. Meine liebste ist die Desktop-Metapher der grafischen Benutzeroberfläche: Ordner, Papierkorb, Schreibtisch. Keine dieser Dinge existiert wirklich, aber sie machen ein abstraktes System sofort navigierbar.</p>
-      <p>Beim Wheel of Readiness stellte ich mir die Frage: Stimmt die Metapher überhaupt? Ein Rad-Diagramm mit Werten von 1 bis 10, sollte das nicht wie ein Bullseye funktionieren? Die Frage beschäftigte mich so sehr, dass ich Coach Olga direkt anschrieb.</p>
+      <div class="section-label" data-en="c13">Der Auslöser</div>
+      <h2 data-en="c14">Gute Metaphern lassen mich nicht los.</h2>
+      <p data-en="c15">Innerhalb des Career Compass gab es ein Konzept, das mich nicht losließ: das Wheel of Readiness for the Market. Nicht wegen seiner Funktion, sondern wegen der Metapher dahinter.</p>
+      <p data-en="c16">Als UX/UI Designer weiß ich um die Bedeutung von Metaphern für die Gestaltung mentaler Modelle. Eine gute Metapher reduziert Komplexität, indem sie etwas Unbekanntes an etwas Bekanntes ankoppelt. Meine liebste ist die Desktop-Metapher der grafischen Benutzeroberfläche: Ordner, Papierkorb, Schreibtisch. Keine dieser Dinge existiert wirklich, aber sie machen ein abstraktes System sofort navigierbar.</p>
+      <p data-en="c17">Beim Wheel of Readiness stellte ich mir die Frage: Stimmt die Metapher überhaupt? Ein Rad-Diagramm mit Werten von 1 bis 10, sollte das nicht wie ein Bullseye funktionieren? Die Frage beschäftigte mich so sehr, dass ich Coach Olga direkt anschrieb.</p>
 
       <blockquote>
         <p>Olga: "The idea behind the Wheel is that the more balanced and 'round' your shape is across all areas, the smoother your journey will be."</p>
       </blockquote>
 
-      <p style="font-size:13px;color:var(--muted);font-style:italic;border-left:3px solid var(--border);padding-left:16px;margin:24px 0;">Das Wheel of Readiness for the Market ist Teil des Career Compass Programms von neuefische, ein Selbsteinschätzungs-Tool, das Teilnehmer dabei unterstützt, ihren Stand in 8 Kernbereichen der Jobsuche zu reflektieren und konkrete nächste Schritte abzuleiten.</p>
+      <p style="font-size:13px;color:var(--muted);font-style:italic;border-left:3px solid var(--border);padding-left:16px;margin:24px 0;" data-en="c18">Das Wheel of Readiness for the Market ist Teil des Career Compass Programms von neuefische, ein Selbsteinschätzungs-Tool, das Teilnehmer dabei unterstützt, ihren Stand in 8 Kernbereichen der Jobsuche zu reflektieren und konkrete nächste Schritte abzuleiten.</p>
 
 
-      <p>Das war der Moment, an dem aus passivem Konsumieren aktives Weiterdenken wurde. Das Wheel of Readiness for the Market deckte alle Bereiche der Jobsuche ab, LinkedIn tauchte darin in nur zwei von acht Dimensionen auf, als Teilaspekt und nicht als eigenständiger Bereich. Die Lücke war klar.</p>
+      <p data-en="c19">Das war der Moment, an dem aus passivem Konsumieren aktives Weiterdenken wurde. Das Wheel of Readiness for the Market deckte alle Bereiche der Jobsuche ab, LinkedIn tauchte darin in nur zwei von acht Dimensionen auf, als Teilaspekt und nicht als eigenständiger Bereich. Die Lücke war klar.</p>
     </div>
 
     <!-- PROZESS -->
     <div class="section" id="umsetzung">
-      <div class="section-label">Umsetzung</div>
-      <h2>Von der Tabelle im Chat zum interaktiven Tool.</h2>
-      <p>Die Metapher war verstanden. Was fehlte, war Zeit. Zwei Deadlines liefen parallel: CV Lab-Beratungen erforderten mindestens ein abgeschlossenes Kapitel, der LinkedIn PUMP Sprint wollte ein Profil das nicht mehr brachlag.</p>
+      <div class="section-label" data-en="c20">Umsetzung</div>
+      <h2 data-en="c21">Von der Tabelle im Chat zum interaktiven Tool.</h2>
+      <p data-en="c22">Die Metapher war verstanden. Was fehlte, war Zeit. Zwei Deadlines liefen parallel: CV Lab-Beratungen erforderten mindestens ein abgeschlossenes Kapitel, der LinkedIn PUMP Sprint wollte ein Profil das nicht mehr brachlag.</p>
 
       <div class="process-strip">
 
         <div class="process-step">
           <div class="step-text">
-            <span class="step-num">Stufe 01</span>
-            <span class="step-title">Prosa wird Struktur</span>
-            <p class="step-desc">Der erste Prompt an Claude: "Please go through these texts and extract the to-dos and turn them into tickable bullet points." Das Material war teils als Prosa verfasst. Der Prompt löste das Problem schnell genug, um die Deadline zu halten.</p>
+            <span class="step-num" data-en="c23">Stufe 01</span>
+            <span class="step-title" data-en="c27">Prosa wird Struktur</span>
+            <p class="step-desc" data-en="c28">Der erste Prompt an Claude: "Please go through these texts and extract the to-dos and turn them into tickable bullet points." Das Material war teils als Prosa verfasst. Der Prompt löste das Problem schnell genug, um die Deadline zu halten.</p>
           </div>
             <div class="step-img">
-               <img src="./wip_tasks.png">
+               <img src="./wip_tasks.png" alt="Stufe 1: Aufgaben als Stichpunkte im Chat" data-en-alt="alt2">
             </div>
         </div>
 
         <div class="process-step reverse">
           <div class="step-text">
-            <span class="step-num">Stufe 02</span>
-            <span class="step-title">Checkboxen und Tags</span>
-            <p class="step-desc">Aus Stichpunkten werden Checkboxen, anklickbar und abhakbar, erledigte Punkte durchgestrichen und grau eingefärbt. Dieselbe Logik wie handgeschriebene Zettel auf der Kommode, nur im Browser. Must-Have, Nice-to-Have, Pro Tip als Tags.</p>
+            <span class="step-num" data-en="c24">Stufe 02</span>
+            <span class="step-title" data-en="c29">Checkboxen und Tags</span>
+            <p class="step-desc" data-en="c30">Aus Stichpunkten werden Checkboxen, anklickbar und abhakbar, erledigte Punkte durchgestrichen und grau eingefärbt. Dieselbe Logik wie handgeschriebene Zettel auf der Kommode, nur im Browser. Must-Have, Nice-to-Have, Pro Tip als Tags.</p>
           </div>
             <div class="step-img">
-                <img src="./wip_checklist.png">
+                <img src="./wip_checklist.png" alt="Stufe 2: Checkliste mit Checkboxen und Tags" data-en-alt="alt3">
             </div>
         </div>
 
         <div class="process-step">
           <div class="step-text">
-            <span class="step-num">Stufe 03</span>
-            <span class="step-title">Das Wheel entsteht</span>
-            <p class="step-desc">Als UX/UI Designer der gerade intensiv Datenvisualisierung lernte stellte ich mir die Frage: Wie macht man den Gesamtfortschritt greifbar? Da erinnerte ich mich an die Metapher. Sie wurde zum Visualisierungsprinzip. Das Wheel aktualisiert sich live beim Abhaken.</p>
+            <span class="step-num" data-en="c25">Stufe 03</span>
+            <span class="step-title" data-en="c31">Das Wheel entsteht</span>
+            <p class="step-desc" data-en="c32">Als UX/UI Designer der gerade intensiv Datenvisualisierung lernte stellte ich mir die Frage: Wie macht man den Gesamtfortschritt greifbar? Da erinnerte ich mich an die Metapher. Sie wurde zum Visualisierungsprinzip. Das Wheel aktualisiert sich live beim Abhaken.</p>
           </div>
             <div class="step-img">
-               <img src="./wip_wheel_unstyled.png">
+               <img src="./wip_wheel_unstyled.png" alt="Stufe 3: erste, ungestylte Version des Wheels" data-en-alt="alt4">
             </div>
         </div>
 
         <div class="process-step reverse">
           <div class="step-text">
-            <span class="step-num">Stufe 04</span>
-            <span class="step-title">Finale Version: helles Theme</span>
-            <p class="step-desc">Das dark theme wurde durch ein helles, LinkedIn-nahes Design ersetzt. Checklist und Wheel in einer Ansicht. Tags, Fortschrittsbalken, Live-Score. Deployed auf GitHub Pages als einzelne HTML-Datei.</p>
+            <span class="step-num" data-en="c26">Stufe 04</span>
+            <span class="step-title" data-en="c33">Finale Version: helles Theme</span>
+            <p class="step-desc" data-en="c34">Das dark theme wurde durch ein helles, LinkedIn-nahes Design ersetzt. Checklist und Wheel in einer Ansicht. Tags, Fortschrittsbalken, Live-Score. Deployed auf GitHub Pages als einzelne HTML-Datei.</p>
           </div>
 
           <div class="step-img">
-            <img src="./screenshot-checklist.png">
+            <img src="./screenshot-checklist.png" alt="Stufe 4: finale Version im hellen Theme" data-en-alt="alt5">
           </div>
         </div>
 
       </div>
 
-      <p style="margin-top:24px;">Den Code hat Claude AI generiert, als einzelne HTML-Datei ohne Framework. Ich hätte es in React gebaut, aber das war nicht nötig, weil es kein State-Management, keine Komponenten-Wiederverwendung und kein Backend brauchte. GitHub Pages, eine Datei, fertig.</p>
+      <p style="margin-top:24px;" data-en="c35">Den Code hat Claude AI generiert, als einzelne HTML-Datei ohne Framework. Ich hätte es in React gebaut, aber das war nicht nötig, weil es kein State-Management, keine Komponenten-Wiederverwendung und kein Backend brauchte. GitHub Pages, eine Datei, fertig.</p>
 
-      <p>Bevor ich den Post veröffentlichte, kontaktierte ich Olga direkt. Ich hatte Material aus dem Career Compass als Ausgangspunkt verwendet, also Inhalte, die das Career Team erarbeitet hatte und nicht ich. Das stillschweigend zu tun wäre falsch gewesen. Olga gab grünes Licht.</p>
+      <p data-en="c36">Bevor ich den Post veröffentlichte, kontaktierte ich Olga direkt. Ich hatte Material aus dem Career Compass als Ausgangspunkt verwendet, also Inhalte, die das Career Team erarbeitet hatte und nicht ich. Das stillschweigend zu tun wäre falsch gewesen. Olga gab grünes Licht.</p>
     </div>
 
     <!-- ARBEITSWEISE -->
     <div class="section" id="arbeitsweise">
-      <div class="section-label">Arbeitsweise</div>
-      <h2>Natürliche Sprache als Interface.</h2>
-      <p>Was ich in diesem Prozess als Methode eingesetzt habe, war keine klassische Entwicklungsstrategie. Es war schrittweise Komplexitätsreduktion durch natürliche Sprache.</p>
-      <p>Fließtext zu Stichpunkten, Stichpunkte zu Checkboxen. Jeder Schritt hat nicht nur die Datenmenge reduziert, sondern auch den kognitiven Load verringert. Eine Checkbox, die zwischen erledigt und nicht erledigt unterscheidet, ist keine technische Entscheidung. Sie ist eine Designentscheidung.</p>
-      <p>Das Interface zwischen mir und dem Ergebnis war natürliche Sprache, auf Englisch oder Deutsch, je nachdem was im kreativen Gedankenprozess gerade näher lag. Ich habe beschrieben was wie aussehen und funktionieren soll, präzise genug, weil ich das fachliche Verständnis hatte um präzise zu beschreiben. UX/UI Verständnis bestimmt was beschrieben wird, Entwicklungsverständnis bestimmt ob das Ergebnis stimmt, und KI übersetzt beides in funktionierenden Code.</p>
+      <div class="section-label" data-en="c37">Arbeitsweise</div>
+      <h2 data-en="c38">Natürliche Sprache als Interface.</h2>
+      <p data-en="c39">Was ich in diesem Prozess als Methode eingesetzt habe, war keine klassische Entwicklungsstrategie. Es war schrittweise Komplexitätsreduktion durch natürliche Sprache.</p>
+      <p data-en="c40">Fließtext zu Stichpunkten, Stichpunkte zu Checkboxen. Jeder Schritt hat nicht nur die Datenmenge reduziert, sondern auch den kognitiven Load verringert. Eine Checkbox, die zwischen erledigt und nicht erledigt unterscheidet, ist keine technische Entscheidung. Sie ist eine Designentscheidung.</p>
+      <p data-en="c41">Das Interface zwischen mir und dem Ergebnis war natürliche Sprache, auf Englisch oder Deutsch, je nachdem was im kreativen Gedankenprozess gerade näher lag. Ich habe beschrieben was wie aussehen und funktionieren soll, präzise genug, weil ich das fachliche Verständnis hatte um präzise zu beschreiben. UX/UI Verständnis bestimmt was beschrieben wird, Entwicklungsverständnis bestimmt ob das Ergebnis stimmt, und KI übersetzt beides in funktionierenden Code.</p>
 
       <blockquote>
-        <p>Wer beim Arbeiten mit KI Probleme präzise in Worte fassen kann, kann Sprache als Werkzeug verwenden, um seine eigenen Lösungen zu gestalten.</p>
+        <p data-en="c42">Wer beim Arbeiten mit KI Probleme präzise in Worte fassen kann, kann Sprache als Werkzeug verwenden, um seine eigenen Lösungen zu gestalten.</p>
       </blockquote>
 
-      <p style="font-weight:600;color:var(--dark);">Von erstem Prompt bis zur ersten integrierten, gestylten Version: 21 Stunden, aufgeteilt auf zwei Sessions. Kein Figma. Kein Handoff. Alles aus einer Hand.</p>
+      <p style="font-weight:600;color:var(--dark);" data-en="c43">Von erstem Prompt bis zur ersten integrierten, gestylten Version: 21 Stunden, aufgeteilt auf zwei Sessions. Kein Figma. Kein Handoff. Alles aus einer Hand.</p>
     </div>
 
     <!-- ERGEBNIS -->
     <div class="section" id="ergebnis">
-      <div class="section-label">Ergebnis</div>
-      <h2>28 Reaktionen. 17 Kommentare. 1.748 Impressions.</h2>
-      <p>Aber die Resonanz ging über Metriken hinaus.</p>
+      <div class="section-label" data-en="c44">Ergebnis</div>
+      <h2 data-en="c45">28 Reaktionen. 17 Kommentare. 1.748 Impressions.</h2>
+      <p data-en="c46">Aber die Resonanz ging über Metriken hinaus.</p>
 
       <div class="result-grid">
         <div class="result-card">
           <div class="result-number">28</div>
-          <div class="result-label">Reaktionen auf den LinkedIn Post</div>
+          <div class="result-label" data-en="c48">Reaktionen auf den LinkedIn Post</div>
         </div>
         <div class="result-card">
           <div class="result-number">17</div>
-          <div class="result-label">Kommentare, darunter echtes Produktfeedback</div>
+          <div class="result-label" data-en="c49">Kommentare, darunter echtes Produktfeedback</div>
         </div>
         <div class="result-card">
-          <div class="result-number">1.748</div>
-          <div class="result-label">Impressions, stärkster Post bis dato</div>
+          <div class="result-number" data-en="c47">1.748</div>
+          <div class="result-label" data-en="c50">Impressions, stärkster Post bis dato</div>
         </div>
       </div>
 
-      <p style="margin-top:32px;">Ein Head Coach Java Development bei neuefische testete das Tool und kommentierte öffentlich mit Score 4,8 und dem Urteil "easy to use and insightful." Das war kein Lob, sondern Nutzerfeedback von jemandem, der das Tool tatsächlich durchlief.</p>
-      <p>In den Kommentaren entstand ein echtes Produktgespräch: Eine Produktmanagerin brachte einen konkreten UX-Einwand zur Datenpersistenz bei Gerätewechsel, worauf mein Gegenvorschlag eines Share-Links mit URL-encoded State als valide Weiterentwicklung bestätigt wurde.</p>
+      <p style="margin-top:32px;" data-en="c51">Ein Head Coach Java Development bei neuefische testete das Tool und kommentierte öffentlich mit Score 4,8 und dem Urteil "easy to use and insightful." Das war kein Lob, sondern Nutzerfeedback von jemandem, der das Tool tatsächlich durchlief.</p>
+      <p data-en="c52">In den Kommentaren entstand ein echtes Produktgespräch: Eine Produktmanagerin brachte einen konkreten UX-Einwand zur Datenpersistenz bei Gerätewechsel, worauf mein Gegenvorschlag eines Share-Links mit URL-encoded State als valide Weiterentwicklung bestätigt wurde.</p>
 
       <div class="olga-quote">
         <p>A very cool example of our students taking ideas from the program and evolving them further in their own way. Taking a concept, improving it, and turning learning into something useful for others. That's exactly the kind of initiative and ownership we hope to encourage.</p>
         <p style="margin-top:12px;">Your projects don't only demonstrate technical or design skills, they also tell a story about initiative, curiosity, collaboration, and applying learning in practice. These are the qualities hiring managers are often looking for.</p>
-        <div class="olga-attribution">Olga Lavrenko, Career Coach, neuefische · Discord, 27. Mai 2026</div>
+        <div class="olga-attribution" data-en="c53">Olga Lavrenko, Career Coach, neuefische · Discord, 27. Mai 2026</div>
       </div>
     </div>
 
     <!-- REFLEXION -->
     <div class="section" id="reflexion">
-      <div class="section-label">Reflexion</div>
-      <h2>Was dieses Projekt ist und was nicht.</h2>
+      <div class="section-label" data-en="c54">Reflexion</div>
+      <h2 data-en="c55">Was dieses Projekt ist und was nicht.</h2>
 
       <div class="honest-box">
-        <p>Dieses Projekt ist kein UX Research. Es gibt keine Nutzerinterviews, keine dokumentierten Hypothesen, keine strukturierten Usability-Tests. Wer das hier sucht, wird es nicht finden.</p>
+        <p data-en="c56">Dieses Projekt ist kein UX Research. Es gibt keine Nutzerinterviews, keine dokumentierten Hypothesen, keine strukturierten Usability-Tests. Wer das hier sucht, wird es nicht finden.</p>
       </div>
 
-      <p>Was es ist: ein ehrlicher Problem-Discovery- und Execution-Prozess. Ein Problem im eigenen Kontext erkannt, eine bestehende Metapher hinterfragt und verstanden, Scope bewusst klein gehalten, transparent kommuniziert, auf Nutzerfeedback substanziell geantwortet.</p>
+      <p data-en="c57">Was es ist: ein ehrlicher Problem-Discovery- und Execution-Prozess. Ein Problem im eigenen Kontext erkannt, eine bestehende Metapher hinterfragt und verstanden, Scope bewusst klein gehalten, transparent kommuniziert, auf Nutzerfeedback substanziell geantwortet.</p>
 
-      <p>Am Anfang hatte ich gedanklich bereits alles aufgesetzt: ein Trello Board, ein GitHub Repo, ein React Setup, ein Figma Board, ein Miro Board. Das klassische Zusammenspiel von Projektmanagement, Product Owner, Developer und UX/UI Designer, verteilt auf Rollen, Tools und Phasen.</p>
+      <p data-en="c58">Am Anfang hatte ich gedanklich bereits alles aufgesetzt: ein Trello Board, ein GitHub Repo, ein React Setup, ein Figma Board, ein Miro Board. Das klassische Zusammenspiel von Projektmanagement, Product Owner, Developer und UX/UI Designer, verteilt auf Rollen, Tools und Phasen.</p>
 
-      <p>Ich habe nichts davon gebraucht.</p>
+      <p data-en="c59">Ich habe nichts davon gebraucht.</p>
 
-      <p>Weder UX/UI Verständnis noch Entwicklungsverständnis noch KI hätte allein gereicht. Zusammen haben sie es möglich gemacht, von der Idee zur funktionierenden Lösung zu kommen, ohne auf ein Team, ein Budget oder perfekte Voraussetzungen zu warten.</p>
+      <p data-en="c60">Weder UX/UI Verständnis noch Entwicklungsverständnis noch KI hätte allein gereicht. Zusammen haben sie es möglich gemacht, von der Idee zur funktionierenden Lösung zu kommen, ohne auf ein Team, ein Budget oder perfekte Voraussetzungen zu warten.</p>
 
-      <p>KI habe ich dabei zur Exploration genutzt, nicht um das Denken zu ersetzen, sondern um es zu beschleunigen. Den Code hat Claude AI geschrieben. Aber welches Problem gelöst wird, welche Metapher trägt und welcher Scope sinnvoll ist, das waren meine Design-Entscheidungen.</p>
+      <p data-en="c61">KI habe ich dabei zur Exploration genutzt, nicht um das Denken zu ersetzen, sondern um es zu beschleunigen. Den Code hat Claude AI geschrieben. Aber welches Problem gelöst wird, welche Metapher trägt und welcher Scope sinnvoll ist, das waren meine Design-Entscheidungen.</p>
 
-      <p><em>Das ist keine Vereinfachung des Designprozesses. Es ist eine andere Form davon.</em></p>
+      <p data-en="c62"><em>Das ist keine Vereinfachung des Designprozesses. Es ist eine andere Form davon.</em></p>
     </div>
 
 
     <div class="cta-block">
-      <h2>Wo stehst du mit deinem LinkedIn-Profil?</h2>
-      <p>Interaktive Checkliste mit Live-Visualisierung.</p>
-      <a href="https://sebastian-weber.github.io/linkedin-readiness-guide/index.html" class="btn">Tool ausprobieren →</a>
+      <h2 data-en="c63">Wo stehst du mit deinem LinkedIn-Profil?</h2>
+      <p data-en="c64">Interaktive Checkliste mit Live-Visualisierung.</p>
+      <a href="https://sebastian-weber.github.io/linkedin-readiness-guide/linkedin-wheel-index.html" class="btn" data-en="c65">Tool ausprobieren →</a>
     </div>
   </div>
 
 <footer>
-  <p>Sebastian Weber · UI Designer · Design-to-Code · Köln 2026</p>
-  <p>
-    <a href="https://linkedin.com/in/sebastian-weber1708">LinkedIn</a>
-    ·
-    <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html">
-      Impressum &amp; Datenschutz
-    </a>
-    ·
-    <a href="#" id="cookie-settings-link">Cookie-Einstellungen</a>
-  </p>
+  <p data-en="c66">Sebastian Weber · UI Designer · Design-to-Code · Köln 2026</p>
+  <p><a href="https://linkedin.com/in/sebastian-weber1708">LinkedIn</a> · <a href="https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html" data-en="c67">Impressum &amp; Datenschutz</a> · <a href="#" id="cookie-settings-link" data-en="c68">Cookie-Einstellungen</a></p>
 </footer>
 
 <script>
@@ -948,7 +964,136 @@
 
 
 
-  <script>
+<script>
+  /* ===== i18n: DE im Markup (Originalsprache), EN im Dictionary, gemeinsamer Key sw-lang ===== */
+  (function () {
+    var LANG_KEY = 'sw-lang';
+    var NAV = { de: {"nav-portfolio": "Portfolio", "nav-about": "Über mich", "nav-imprint": "Impressum", "nav-open": "Menü öffnen", "nav-close": "Menü schließen", "sub-aria": "Abschnitte auf dieser Seite", "sub-label": "Auf dieser Seite", "sub-problem": "Problem", "sub-trigger": "Auslöser", "sub-execution": "Umsetzung", "sub-approach": "Arbeitsweise", "sub-result": "Ergebnis", "sub-reflection": "Reflexion"}, en: {"nav-portfolio": "Portfolio", "nav-about": "About", "nav-imprint": "Imprint", "nav-open": "Open menu", "nav-close": "Close menu", "sub-aria": "Sections on this page", "sub-label": "On this page", "sub-problem": "Problem", "sub-trigger": "Trigger", "sub-execution": "Execution", "sub-approach": "Approach", "sub-result": "Result", "sub-reflection": "Reflection"} };
+    var EN = {
+      "alt0": "LinkedIn Profile Readiness Guide with the Wheel of Readiness",
+      "alt1": "Empty LinkedIn profile without photo, banner or activity",
+      "alt2": "Stage 1: tasks as bullet points in the chat",
+      "alt3": "Stage 2: checklist with checkboxes and tags",
+      "alt4": "Stage 3: first, unstyled version of the wheel",
+      "alt5": "Stage 4: final version in the light theme",
+      "c0": "This site uses PostHog to create anonymized usage statistics and session recordings. <a href=\"https://sebastian-weber.github.io/uxui-portfolio/datenschutz.html\" target=\"_blank\">Privacy Policy</a>",
+      "c1": "Decline",
+      "c2": "Accept",
+      "c3": "A static PDF becomes an interactive tool in 21 hours. No Figma, no handoff, all from one pair of hands. Natural language as the interface, vibe coding as the method.",
+      "c4": "Type",
+      "c5": "Context",
+      "c6": "neuefische bootcamp, April–May 2026",
+      "c7": "View live →",
+      "c8": "No photo. No banner. No activity.",
+      "c9": "No photo. No banner. No activity.",
+      "c10": "When did you last message someone on LinkedIn who didn't know you? I never had. I used LinkedIn as a job board. Nothing more. That's where I stood, and as the bootcamp Discord quickly showed, so did others.",
+      "c11": "neuefische's Career Compass addressed exactly that. But the material itself became the new barrier. 43 lectures, almost 7 hours, alongside an ongoing intensive training program. Anyone who started working on it quickly noticed: everything is connected to everything else. The banner affects the headline. The headline depends on the positioning. The positioning isn't settled yet. So nothing is finished.",
+      "c12": "The order was there. But every change immediately pulled other areas along with it. You stalled, started over, and never reached a convincing finish.",
+      "c13": "The Trigger",
+      "c14": "Good metaphors don't let me go.",
+      "c15": "Within the Career Compass there was one concept I couldn't shake: the Wheel of Readiness for the Market. Not because of its function, but because of the metaphor behind it.",
+      "c16": "As a UX/UI designer, I know how much metaphors shape mental models. A good metaphor reduces complexity by linking something unfamiliar to something familiar. My favorite is the desktop metaphor of the graphical user interface: folders, trash, desk. None of these things really exist, yet they make an abstract system instantly navigable.",
+      "c17": "Looking at the Wheel of Readiness, I asked myself: does the metaphor even hold? A wheel chart with values from 1 to 10, shouldn't that work like a bullseye? The question kept me busy enough that I messaged coach Olga directly.",
+      "c18": "The Wheel of Readiness for the Market is part of neuefische's Career Compass program: a self-assessment tool that helps participants reflect on where they stand in 8 core areas of the job search and derive concrete next steps.",
+      "c19": "That was the moment passive consumption turned into active rethinking. The Wheel of Readiness for the Market covered every area of the job search, yet LinkedIn appeared in only two of eight dimensions, as a sub-aspect rather than an area of its own. The gap was clear.",
+      "c20": "Execution",
+      "c21": "From a table in the chat to an interactive tool.",
+      "c22": "The metaphor was understood. What was missing was time. Two deadlines ran in parallel: CV Lab consultations required at least one finished chapter, and the LinkedIn PUMP Sprint called for a profile that was no longer lying idle.",
+      "c23": "Stage 01",
+      "c24": "Stage 02",
+      "c25": "Stage 03",
+      "c26": "Stage 04",
+      "c27": "Prose becomes structure",
+      "c28": "The first prompt to Claude: \"Please go through these texts and extract the to-dos and turn them into tickable bullet points.\" Parts of the material were written as prose. The prompt solved the problem fast enough to hold the deadline.",
+      "c29": "Checkboxes and tags",
+      "c30": "Bullet points become checkboxes, clickable and tickable, with completed items struck through and grayed out. The same logic as handwritten notes on the dresser, just in the browser. Must-have, Nice-to-have, Pro tip as tags.",
+      "c31": "The wheel takes shape",
+      "c32": "As a UX/UI designer who was learning data visualization intensively at the time, I asked myself: how do you make overall progress tangible? That's when I remembered the metaphor. It became the visualization principle. The wheel updates live as you check items off.",
+      "c33": "Final version: light theme",
+      "c34": "The dark theme was replaced with a light, LinkedIn-like design. Checklist and wheel in one view. Tags, progress bar, live score. Deployed on GitHub Pages as a single HTML file.",
+      "c35": "Claude AI generated the code, as a single HTML file without a framework. I would have built it in React, but that wasn't necessary: it needed no state management, no component reuse and no backend. GitHub Pages, one file, done.",
+      "c36": "Before publishing the post, I contacted Olga directly. I had used material from the Career Compass as a starting point, content the Career Team had created, not me. Doing that silently would have been wrong. Olga gave the green light.",
+      "c37": "Approach",
+      "c38": "Natural language as the interface.",
+      "c39": "What I used as a method in this process wasn't a classic development strategy. It was step-by-step complexity reduction through natural language.",
+      "c40": "Prose to bullet points, bullet points to checkboxes. Each step reduced not only the amount of data but also the cognitive load. A checkbox that distinguishes between done and not done isn't a technical decision. It's a design decision.",
+      "c41": "The interface between me and the result was natural language, in English or German, whichever felt closer in the creative thought process at the time. I described how things should look and work, precisely enough because I had the domain knowledge to describe them precisely. UX/UI understanding determines what gets described, development understanding determines whether the result is right, and AI translates both into working code.",
+      "c42": "If you can put problems into precise words when working with AI, you can use language as a tool to shape your own solutions.",
+      "c43": "From the first prompt to the first integrated, styled version: 21 hours, split across two sessions. No Figma. No handoff. All from one pair of hands.",
+      "c44": "Result",
+      "c45": "28 reactions. 17 comments. 1,748 impressions.",
+      "c46": "But the response went beyond metrics.",
+      "c47": "1,748",
+      "c48": "Reactions to the LinkedIn post",
+      "c49": "Comments, including real product feedback",
+      "c50": "Impressions, strongest post to date",
+      "c51": "A Head Coach Java Development at neuefische tested the tool and commented publicly with a score of 4.8 and the verdict \"easy to use and insightful.\" That wasn't praise, it was user feedback from someone who actually went through the tool.",
+      "c52": "A real product conversation unfolded in the comments: a product manager raised a concrete UX concern about data persistence when switching devices, and my counter-proposal of a share link with URL-encoded state was confirmed as a valid next step.",
+      "c53": "Olga Lavrenko, Career Coach, neuefische · Discord, May 27, 2026",
+      "c54": "Reflection",
+      "c55": "What this project is and what it isn't.",
+      "c56": "This project is not UX research. There are no user interviews, no documented hypotheses, no structured usability tests. If that's what you're looking for, you won't find it here.",
+      "c57": "What it is: an honest problem discovery and execution process. A problem identified in my own context, an existing metaphor questioned and understood, scope deliberately kept small, communicated transparently, user feedback answered with substance.",
+      "c58": "At the start, I had already set everything up in my head: a Trello board, a GitHub repo, a React setup, a Figma board, a Miro board. The classic interplay of project management, product owner, developer and UX/UI designer, spread across roles, tools and phases.",
+      "c59": "I needed none of it.",
+      "c60": "Neither UX/UI understanding nor development understanding nor AI would have been enough on its own. Together, they made it possible to get from idea to working solution without waiting for a team, a budget or perfect conditions.",
+      "c61": "I used AI for exploration, not to replace thinking but to speed it up. Claude AI wrote the code. But which problem gets solved, which metaphor holds and which scope makes sense, those were my design decisions.",
+      "c62": "<em>This isn't a simplification of the design process. It's a different form of it.</em>",
+      "c63": "Where does your LinkedIn profile stand?",
+      "c64": "Interactive checklist with live visualization.",
+      "c65": "Try the tool →",
+      "c66": "Sebastian Weber · UI Designer · Design-to-Code · Cologne 2026",
+      "c67": "Imprint &amp; Privacy Policy",
+      "c68": "Cookie Settings"
+};
+    var htmlCache = new Map(), altCache = new Map();
+    var titleDE = document.title;
+    var currentLang = 'en';
+    try { currentLang = localStorage.getItem(LANG_KEY) || 'en'; } catch (e) {}
+    if (currentLang !== 'de' && currentLang !== 'en') currentLang = 'en';
+
+    function apply() {
+      var nav = NAV[currentLang];
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        var v = nav[el.getAttribute('data-i18n')];
+        if (v === undefined) return;
+        if (el.getAttribute('data-i18n-target') === 'aria') el.setAttribute('aria-label', v);
+        else el.textContent = v;
+      });
+      document.querySelectorAll('[data-en]').forEach(function (el) {
+        if (!htmlCache.has(el)) htmlCache.set(el, el.innerHTML);
+        var en = EN[el.getAttribute('data-en')];
+        el.innerHTML = (currentLang === 'en' && en !== undefined) ? en : htmlCache.get(el);
+      });
+      document.querySelectorAll('[data-en-alt]').forEach(function (el) {
+        if (!altCache.has(el)) altCache.set(el, el.getAttribute('alt'));
+        var en = EN[el.getAttribute('data-en-alt')];
+        el.setAttribute('alt', (currentLang === 'en' && en !== undefined) ? en : altCache.get(el));
+      });
+      document.documentElement.lang = currentLang;
+      document.title = titleDE;
+      document.querySelectorAll('[data-lang]').forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-lang') === currentLang);
+      });
+    }
+
+    window.switchLang = function (lang) {
+      if (lang !== 'en' && lang !== 'de') return;
+      currentLang = lang;
+      try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+      apply();
+    };
+
+    document.querySelectorAll('[data-lang]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        window.switchLang(b.getAttribute('data-lang'));
+        if (window.posthog) posthog.capture('lang_switched', { lang: b.getAttribute('data-lang'), page: 'linkedin-case-study' });
+      });
+    });
+    apply();
+  })();
+
+  /* ===== Mobile Drawer ===== */
   (function () {
     var toggle = document.getElementById('navToggle');
     var closeBtn = document.getElementById('navDrawerClose');
@@ -956,13 +1101,25 @@
     var overlay = document.getElementById('navOverlay');
     var lastFocused = null;
 
+    /* Close-Button liegt im selben Bezugssystem (Viewport) wie der Hamburger:
+       Koordinaten werden 1:1 übernommen, ohne Umrechnung. */
+    function alignCloseToToggle() {
+      var t = toggle.getBoundingClientRect();
+      closeBtn.style.left  = t.left + 'px';
+      closeBtn.style.top   = t.top + 'px';
+      closeBtn.style.right = 'auto';
+    }
+
     function openDrawer() {
       lastFocused = document.activeElement;
+      document.body.style.overflow = 'hidden';
+      drawer.scrollTop = 0;
+      alignCloseToToggle();
       drawer.setAttribute('data-open', 'true');
       drawer.setAttribute('aria-hidden', 'false');
+      closeBtn.setAttribute('data-open', 'true');
       overlay.setAttribute('data-open', 'true');
       toggle.setAttribute('aria-expanded', 'true');
-      document.body.style.overflow = 'hidden';
       closeBtn.focus();
       document.addEventListener('keydown', onKeydown);
     }
@@ -970,6 +1127,7 @@
     function closeDrawer() {
       drawer.setAttribute('data-open', 'false');
       drawer.setAttribute('aria-hidden', 'true');
+      closeBtn.setAttribute('data-open', 'false');
       overlay.setAttribute('data-open', 'false');
       toggle.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
@@ -980,7 +1138,7 @@
     function onKeydown(e) {
       if (e.key === 'Escape') closeDrawer();
       if (e.key === 'Tab') {
-        var focusables = drawer.querySelectorAll('a, button');
+        var focusables = [closeBtn].concat(Array.prototype.slice.call(drawer.querySelectorAll('a, button')));
         var first = focusables[0];
         var last = focusables[focusables.length - 1];
         if (e.shiftKey && document.activeElement === first) {
@@ -992,23 +1150,39 @@
     }
 
     toggle.addEventListener('click', openDrawer);
+    window.addEventListener('resize', function () {
+      if (drawer.getAttribute('data-open') === 'true') alignCloseToToggle();
+    });
     closeBtn.addEventListener('click', closeDrawer);
     overlay.addEventListener('click', closeDrawer);
 
-    /* Sprach-Buttons im Drawer an die bestehende switchLang() koppeln */
-    var drawerLangButtons = document.querySelectorAll('.nav-drawer__lang [data-lang]');
-    drawerLangButtons.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var lang = btn.getAttribute('data-lang');
-        if (typeof window.switchLang === 'function') {
-          window.switchLang(lang);
-        }
-        document.querySelectorAll('[data-lang]').forEach(function (b) {
-          b.classList.toggle('active', b.getAttribute('data-lang') === lang);
-        });
+    /* Tap auf einen Sprungpunkt schließt den Drawer */
+    document.querySelectorAll('.subnav-drawer-item').forEach(function (a) {
+      a.addEventListener('click', function () {
+        lastFocused = null;
+        closeDrawer();
       });
     });
   })();
-  </script>
+
+  /* ===== Subnav: aktiven Abschnitt markieren ===== */
+  (function () {
+    var ids = ["problem", "ausloeser", "umsetzung", "arbeitsweise", "ergebnis", "reflexion"];
+    var sections = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+    var links = document.querySelectorAll('.subnav a, .subnav-drawer-item');
+    function update() {
+      var offset = window.innerWidth <= 640 ? 80 : 124;
+      var current = null;
+      sections.forEach(function (sec) { if (sec.getBoundingClientRect().top - offset <= 0) current = sec.id; });
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) current = ids[ids.length - 1];
+      links.forEach(function (a) {
+        a.classList.toggle('active', current !== null && a.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
+</script>
 
 </body></html>
